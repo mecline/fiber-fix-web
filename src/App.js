@@ -6,6 +6,10 @@ import Login from './components/Login';
 import Register from './components/Register';
 import ForgotPassword from './components/ForgotPassword';
 import Home from './components/Home';
+import NavBar from './components/NavBar';
+import Embroidery from './components/Embroidery';
+import Knitting from './components/Knitting';
+import Crochet from './components/Crochet';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -34,6 +38,7 @@ function App() {
         width: '100vw',
         height: '100vh' }}
         >
+        <NavBar user={user} />
         <Routes>
           <Route 
             path="/login" 
@@ -54,6 +59,18 @@ function App() {
           <Route 
             path="/" 
             element={<Navigate to={user ? "/home" : "/login"} />} 
+          />
+          <Route 
+            path="/embroidery" 
+            element={user ? <Embroidery /> : <Navigate to="/login" />} 
+          />
+          <Route 
+            path="/knitting" 
+            element={user ? <Knitting /> : <Navigate to="/login" />} 
+          />
+          <Route 
+            path="/crochet" 
+            element={user ? <Crochet /> : <Navigate to="/login" />} 
           />
           <Route 
             path="*" 
