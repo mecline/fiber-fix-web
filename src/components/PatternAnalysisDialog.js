@@ -21,6 +21,9 @@ function PatternAnalysisDialog({ open, onClose, flossRequirements, userInventory
         <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
             <DialogTitle>Pattern Floss Requirements</DialogTitle>
             <DialogContent>
+                <p>NOTE: Any DMC floss numbers that are double digits will note be counted here for the moment.
+                    Please double check your pattern and manually add these flosses. They will be coming in another update.
+                </p>
                 <Paper style={{ marginTop: '1rem' }}>
                     <Table>
                         <TableHead>

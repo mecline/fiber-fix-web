@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { TextField, IconButton, Popover, Button, Tooltip, Box } from '@mui/material';
+import { TextField, IconButton, Popover, Button, Tooltip } from '@mui/material';
 import { createWorker, createScheduler } from 'tesseract.js';
 import { auth } from '../firebase';
 import { initializeUserFloss, updateFlossCount } from '../firebase/db';
