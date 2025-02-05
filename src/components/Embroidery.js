@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { TextField, IconButton, Popover, Button, Tooltip, Box } from '@mui/material';
-import { createWorker } from 'tesseract.js';
+import { createWorker, createScheduler } from 'tesseract.js';
 import { auth } from '../firebase';
 import { initializeUserFloss, updateFlossCount } from '../firebase/db';
 import { HexColorPicker } from 'react-colorful';
@@ -141,12 +141,9 @@ function Embroidery() {
 
         setProcessingFile(true);
         try {
-            const worker = await createWorker({
-                logger: m => console.log(m)
-            });
-            await worker.load();
-            await worker.loadLanguage('eng');
-            await worker.initialize('eng');
+            const scheduler = createScheduler();
+            const worker = await createWorker();
+            await scheduler.addWorker(worker);
 
             // Convert PDF to images and process each page
             const pdfjs = await import('pdfjs-dist');
@@ -169,7 +166,7 @@ function Embroidery() {
                     viewport: viewport
                 }).promise;
 
-                const { data: { text } } = await worker.recognize(canvas);
+                const { data: { text } } = await scheduler.addJob('recognize', canvas);
                 
                 // Find DMC numbers in the text
                 const dmcRegex = /\b\d{3,4}\b/g;
@@ -183,7 +180,7 @@ function Embroidery() {
                 });
             }
 
-            await worker.terminate();
+            await scheduler.terminate();
 
             // Convert found numbers to floss requirements
             const requirements = Array.from(foundNumbers).map(number => ({
