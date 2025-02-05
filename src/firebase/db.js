@@ -1,11 +1,11 @@
-import { getDatabase, ref, set, get, child } from "firebase/database";
+import { getFirestore, doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 import { auth } from '../firebase';
 
-const db = getDatabase();
+const db = getFirestore();
 
 export const initializeUserFloss = async (userId) => {
-    const userRef = ref(db, `users/${userId}/floss`);
-    const snapshot = await get(userRef);
+    const userRef = doc(db, "users", userId);
+    const snapshot = await getDoc(userRef);
     
     if (!snapshot.exists()) {
         const initialFloss = {};
@@ -15,18 +15,23 @@ export const initializeUserFloss = async (userId) => {
             initialFloss[floss.floss] = 0;
         });
         
-        await set(userRef, initialFloss);
+        await setDoc(userRef, { floss: initialFloss });
         return initialFloss;
     }
     
-    return snapshot.val();
+    return snapshot.data().floss;
 };
 
 export const updateFlossCount = async (userId, flossNumber, increment) => {
-    const flossRef = ref(db, `users/${userId}/floss/${flossNumber}`);
-    const snapshot = await get(flossRef);
-    const currentCount = snapshot.exists() ? snapshot.val() : 0;
-    const newCount = Math.max(0, currentCount + increment); // Prevent negative counts
-    await set(flossRef, newCount);
+    const userRef = doc(db, "users", userId);
+    const snapshot = await getDoc(userRef);
+    const currentData = snapshot.data();
+    const currentCount = currentData?.floss?.[flossNumber] || 0;
+    const newCount = Math.max(0, currentCount + increment);
+
+    await updateDoc(userRef, {
+        [`floss.${flossNumber}`]: newCount
+    });
+
     return newCount;
 };
