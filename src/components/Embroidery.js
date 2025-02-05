@@ -1,12 +1,25 @@
 import React, { useState, useMemo } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { TextField } from '@mui/material';
+import { TextField, IconButton, Popover } from '@mui/material';
+import { HexColorPicker } from 'react-colorful';
+import ColorLensIcon from '@mui/icons-material/ColorLens';
 import dmcData from '../data/dmc_floss_data.json';
 import { calculateColorDifference, isValidHex } from '../utils/colorUtils';
 
 function Embroidery() {
     const [searchColor, setSearchColor] = useState('');
     const [error, setError] = useState('');
+    const [anchorEl, setAnchorEl] = useState(null);
+
+    const handleColorPickerClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleColorPickerClose = () => {
+        setAnchorEl(null);
+    };
+
+    const open = Boolean(anchorEl);
 
     // Find closest colors when a valid hex is entered
     const closestColors = useMemo(() => {
@@ -74,7 +87,7 @@ function Embroidery() {
         <div className="content-container">
             <div className="craft-section">
                 <h1>DMC Floss Colors</h1>
-                <div className="color-search">
+                <div className="color-search" style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
                     <TextField
                         label="Search by Hex Color"
                         value={searchColor}
@@ -84,6 +97,37 @@ function Embroidery() {
                         placeholder="Enter hex color (e.g., FF0000)"
                         sx={{ marginBottom: 2, width: '250px' }}
                     />
+                    <IconButton 
+                        onClick={handleColorPickerClick}
+                        sx={{ 
+                            mt: 1,
+                            backgroundColor: searchColor || '#fff',
+                            '&:hover': { backgroundColor: searchColor || '#f0f0f0' }
+                        }}
+                    >
+                        <ColorLensIcon />
+                    </IconButton>
+                    <Popover
+                        open={open}
+                        anchorEl={anchorEl}
+                        onClose={handleColorPickerClose}
+                        anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'right',
+                        }}
+                        transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'right',
+                        }}
+                    >
+                        <HexColorPicker
+                            color={searchColor || '#ffffff'}
+                            onChange={(color) => {
+                                setSearchColor(color);
+                                setError('');
+                            }}
+                        />
+                    </Popover>
                 </div>
                 <div style={{ height: 600, width: '100%' }}>
                     <DataGrid
