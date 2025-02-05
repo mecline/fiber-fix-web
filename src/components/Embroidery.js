@@ -26,10 +26,11 @@ function Embroidery() {
 
     const handleColorSearch = (event) => {
         const value = event.target.value;
-        if (value === '' || isValidHex(value)) {
+        if (value.length <= 7) {  // Allow up to 7 characters (#FFFFFF)
             setSearchColor(value);
             setError('');
-        } else {
+        }
+        if (value.length === 7 && !isValidHex(value)) {
             setError('Please enter a valid hex color (e.g., FF0000 or #FF0000)');
         }
     };
@@ -88,8 +89,12 @@ function Embroidery() {
                     <DataGrid
                         rows={dmcData.map((item, index) => ({
                             id: index,
-                            ...item
-                        }))}
+                            ...item,
+                            sortPriority: closestColors.includes(item.floss) ? 
+                                (item.hex.toLowerCase() === (searchColor.startsWith('#') ? searchColor : `#${searchColor}`).toLowerCase() ? 1 : 2) 
+                                : 3
+                        }))
+                        .sort((a, b) => a.sortPriority - b.sortPriority)}
                         columns={columns}
                         pageSize={25}
                         rowsPerPageOptions={[25]}
