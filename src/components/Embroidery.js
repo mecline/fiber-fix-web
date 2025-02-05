@@ -1,12 +1,14 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { TextField, IconButton, Popover, Button, Tooltip } from '@mui/material';
+import { TextField, IconButton, Popover, Button, Tooltip, Box } from '@mui/material';
+import { createWorker } from 'tesseract.js';
 import { auth } from '../firebase';
 import { initializeUserFloss, updateFlossCount } from '../firebase/db';
 import { HexColorPicker } from 'react-colorful';
 import ColorLensIcon from '@mui/icons-material/ColorLens';
 import dmcData from '../data/dmc_floss_data.json';
 import { calculateColorDifference, isValidHex } from '../utils/colorUtils';
+import PatternAnalysisDialog from './PatternAnalysisDialog';
 
 function Embroidery() {
     const [searchColor, setSearchColor] = useState('');
@@ -14,6 +16,9 @@ function Embroidery() {
     const [anchorEl, setAnchorEl] = useState(null);
     const [flossCounts, setFlossCounts] = useState({});
     const [loading, setLoading] = useState(true);
+    const [patternDialogOpen, setPatternDialogOpen] = useState(false);
+    const [patternFlossNumbers, setPatternFlossNumbers] = useState([]);
+    const [processingFile, setProcessingFile] = useState(false);
 
     useEffect(() => {
         const loadFlossCounts = async () => {
@@ -130,10 +135,92 @@ function Embroidery() {
         return '';
     };
 
+    const handlePatternUpload = async (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        setProcessingFile(true);
+        try {
+            const worker = await createWorker();
+            await worker.loadLanguage('eng');
+            await worker.initialize('eng');
+
+            // Convert PDF to images and process each page
+            const pdfjs = await import('pdfjs-dist');
+            const pdfjsWorker = await import('pdfjs-dist/build/pdf.worker.entry');
+            pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
+
+            const pdf = await pdfjs.getDocument(URL.createObjectURL(file)).promise;
+            const foundNumbers = new Set();
+
+            for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                const page = await pdf.getPage(pageNum);
+                const viewport = page.getViewport({ scale: 1.5 });
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                await page.render({
+                    canvasContext: context,
+                    viewport: viewport
+                }).promise;
+
+                const { data: { text } } = await worker.recognize(canvas);
+                
+                // Find DMC numbers in the text
+                const dmcRegex = /\b\d{3,4}\b/g;
+                const numbers = text.match(dmcRegex) || [];
+                
+                numbers.forEach(num => {
+                    // Verify if the number exists in DMC data
+                    if (dmcData.some(floss => floss.floss === num)) {
+                        foundNumbers.add(num);
+                    }
+                });
+            }
+
+            await worker.terminate();
+
+            // Convert found numbers to floss requirements
+            const requirements = Array.from(foundNumbers).map(number => ({
+                number,
+                name: dmcData.find(floss => floss.floss === number)?.name || 'Unknown'
+            }));
+
+            setPatternFlossNumbers(requirements);
+            setPatternDialogOpen(true);
+        } catch (error) {
+            console.error('Error processing PDF:', error);
+            // You might want to show an error message to the user here
+        } finally {
+            setProcessingFile(false);
+        }
+    };
+
     return (
         <div className="content-container">
             <div className="craft-section">
                 <h1>DMC Floss Colors</h1>
+                <Box sx={{ mb: 2 }}>
+                    <input
+                        accept="application/pdf"
+                        style={{ display: 'none' }}
+                        id="pattern-file-upload"
+                        type="file"
+                        onChange={handlePatternUpload}
+                        disabled={processingFile}
+                    />
+                    <label htmlFor="pattern-file-upload">
+                        <Button
+                            variant="contained"
+                            component="span"
+                            disabled={processingFile}
+                        >
+                            {processingFile ? 'Processing...' : 'Upload Pattern PDF'}
+                        </Button>
+                    </label>
+                </Box>
                 <div className="color-search" style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
                     <TextField
                         label="Search by HEX color or floss number"
@@ -213,6 +300,12 @@ function Embroidery() {
                         }}
                     />
                 </div>
+                <PatternAnalysisDialog
+                    open={patternDialogOpen}
+                    onClose={() => setPatternDialogOpen(false)}
+                    flossRequirements={patternFlossNumbers}
+                    userInventory={flossCounts}
+                />
             </div>
         </div>
     );
