@@ -55,15 +55,15 @@ function App() {
         <Routes>
           <Route 
             path="/login" 
-            element={user ? <Navigate to="/home" /> : <Login />} 
+            element={user ? <Navigate to="/embroidery" /> : <Login />} 
           />
           <Route 
             path="/register" 
-            element={user ? <Navigate to="/home" /> : <Register />} 
+            element={user ? <Navigate to="/embroidery" /> : <Register />} 
           />
           <Route 
             path="/forgot-password" 
-            element={user ? <Navigate to="/home" /> : <ForgotPassword />} 
+            element={user ? <Navigate to="/embroidery" /> : <ForgotPassword />} 
           />
           <Route 
             path="/home" 
@@ -71,7 +71,7 @@ function App() {
           />
           <Route 
             path="/" 
-            element={<Navigate to={user ? "/home" : "/login"} />} 
+            element={<Navigate to={user ? "/embroidery" : "/login"} />} 
           />
           <Route 
             path="/embroidery" 

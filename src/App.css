@@ -141,7 +141,7 @@
 
 .content-container {
   padding: var(--spacing-large);
-  margin: var(--spacing-large);
+  /* margin: var(--spacing-large); */
 }
 
 .craft-section {
