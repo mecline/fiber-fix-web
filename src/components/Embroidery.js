@@ -1,8 +1,39 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
+import { TextField } from '@mui/material';
 import dmcData from '../data/dmc_floss_data.json';
+import { calculateColorDifference, isValidHex } from '../utils/colorUtils';
 
 function Embroidery() {
+    const [searchColor, setSearchColor] = useState('');
+    const [error, setError] = useState('');
+
+    // Find closest colors when a valid hex is entered
+    const closestColors = useMemo(() => {
+        if (!searchColor || !isValidHex(searchColor)) return [];
+
+        const normalizedSearchColor = searchColor.startsWith('#') ? searchColor : `#${searchColor}`;
+        
+        return dmcData
+            .map(color => ({
+                ...color,
+                difference: calculateColorDifference(normalizedSearchColor, color.hex)
+            }))
+            .sort((a, b) => a.difference - b.difference)
+            .slice(0, 3)
+            .map(color => color.floss);
+    }, [searchColor]);
+
+    const handleColorSearch = (event) => {
+        const value = event.target.value;
+        if (value === '' || isValidHex(value)) {
+            setSearchColor(value);
+            setError('');
+        } else {
+            setError('Please enter a valid hex color (e.g., FF0000 or #FF0000)');
+        }
+    };
+
     const columns = [
         { field: 'floss', headerName: 'DMC Number', width: 130 },
         { field: 'name', headerName: 'Color Name', width: 200 },
@@ -27,10 +58,32 @@ function Embroidery() {
         }
     ];
 
+    const getRowClassName = (params) => {
+        if (!searchColor || !isValidHex(searchColor)) return '';
+        
+        const isExactMatch = params.row.hex.toLowerCase() === (searchColor.startsWith('#') ? searchColor : `#${searchColor}`).toLowerCase();
+        const isCloseMatch = closestColors.includes(params.row.floss);
+        
+        if (isExactMatch) return 'exact-match-row';
+        if (isCloseMatch) return 'close-match-row';
+        return '';
+    };
+
     return (
         <div className="content-container">
             <div className="craft-section">
                 <h1>DMC Floss Colors</h1>
+                <div className="color-search">
+                    <TextField
+                        label="Search by Hex Color"
+                        value={searchColor}
+                        onChange={handleColorSearch}
+                        error={!!error}
+                        helperText={error}
+                        placeholder="Enter hex color (e.g., FF0000)"
+                        sx={{ marginBottom: 2, width: '250px' }}
+                    />
+                </div>
                 <div style={{ height: 600, width: '100%' }}>
                     <DataGrid
                         rows={dmcData.map((item, index) => ({
@@ -41,10 +94,23 @@ function Embroidery() {
                         pageSize={25}
                         rowsPerPageOptions={[25]}
                         disableSelectionOnClick
+                        getRowClassName={getRowClassName}
                         sx={{
                             backgroundColor: 'white',
                             '& .MuiDataGrid-cell': {
                                 borderColor: '#f0f0f0'
+                            },
+                            '& .exact-match-row': {
+                                backgroundColor: 'rgba(0, 128, 0, 0.2)',
+                                '&:hover': {
+                                    backgroundColor: 'rgba(0, 128, 0, 0.3)',
+                                }
+                            },
+                            '& .close-match-row': {
+                                backgroundColor: 'rgba(255, 255, 0, 0.1)',
+                                '&:hover': {
+                                    backgroundColor: 'rgba(255, 255, 0, 0.2)',
+                                }
                             }
                         }}
                     />
