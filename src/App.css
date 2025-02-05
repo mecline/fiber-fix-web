@@ -141,8 +141,9 @@
 
 .content-container {
   padding: var(--spacing-large);
-  height: calc(100vh - 80px); /* Subtract navbar height */
+  height: calc(100vh - 100px); /* Subtract navbar height + margin */
   overflow-y: auto;
+  margin-bottom: 20px;
 }
 
 .craft-section {
