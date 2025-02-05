@@ -169,7 +169,7 @@ function Embroidery() {
                 const { data: { text } } = await scheduler.addJob('recognize', canvas);
                 
                 // Find DMC numbers in the text
-                const dmcRegex = /\b\d{2,4}\b/g;
+                const dmcRegex = /\b\d{2,4}\b/g;  // Match 2-4 digit numbers
                 const numbers = text.match(dmcRegex) || [];
                 
                 numbers.forEach(num => {
@@ -267,14 +267,35 @@ function Embroidery() {
                 </div>
                 <div style={{ height: '60vh', width: '100%' }}>
                     <DataGrid
-                        rows={dmcData.map((item, index) => ({
-                            id: index,
-                            ...item,
-                            sortPriority: closestColors.includes(item.floss) ?
-                                (item.hex.toLowerCase() === (searchColor.startsWith('#') ? searchColor : `#${searchColor}`).toLowerCase() ? 1 : 2)
-                                : 3
-                        }))
-                            .sort((a, b) => a.sortPriority - b.sortPriority)}
+                        rows={dmcData.map((item, index) => {
+                            let sortPriority = 999; // Default priority
+                            const searchLower = searchColor.toLowerCase();
+                            const hexLower = item.hex.toLowerCase();
+                            const normalizedSearch = searchLower.startsWith('#') ? searchLower : `#${searchLower}`;
+
+                            // Exact floss number match
+                            if (item.floss === searchColor) {
+                                sortPriority = 1;
+                            }
+                            // Exact hex match
+                            else if (hexLower === normalizedSearch) {
+                                sortPriority = 2;
+                            }
+                            // Close color match
+                            else if (closestColors.includes(item.floss)) {
+                                sortPriority = 3;
+                            }
+                            // Partial floss number match
+                            else if (searchColor && item.floss.includes(searchColor)) {
+                                sortPriority = 4;
+                            }
+
+                            return {
+                                id: index,
+                                ...item,
+                                sortPriority
+                            };
+                        }).sort((a, b) => a.sortPriority - b.sortPriority)}
                         columns={columns}
                         pageSize={25}
                         rowsPerPageOptions={[25]}
