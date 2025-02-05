@@ -17,7 +17,7 @@ function NavBar({ user }) {
     return (
         <nav className="navbar">
             <div className="nav-brand">
-                <Link to="/">Fiber Artists Hub</Link>
+                <Link to="/">Fiber Fix</Link>
             </div>
             <div className="nav-links">
                 <Link to="/embroidery">Embroidery</Link>

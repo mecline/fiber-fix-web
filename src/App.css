@@ -142,7 +142,6 @@
 .content-container {
   padding: var(--spacing-large);
   height: calc(100vh - 100px); /* Subtract navbar height + margin */
-  overflow-y: auto;
   margin-bottom: 20px;
 }
 
@@ -153,6 +152,7 @@
   box-shadow: var(--box-shadow);
   max-width: 1200px;
   margin: 0 auto;
+  overflow: auto;
 }
 
 :root {

@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { TextField, IconButton, Popover, Button } from '@mui/material';
+import { TextField, IconButton, Popover, Button, Tooltip } from '@mui/material';
 import { auth } from '../firebase';
 import { initializeUserFloss, updateFlossCount } from '../firebase/db';
 import { HexColorPicker } from 'react-colorful';
@@ -51,7 +51,7 @@ function Embroidery() {
         if (!searchColor || !isValidHex(searchColor)) return [];
 
         const normalizedSearchColor = searchColor.startsWith('#') ? searchColor : `#${searchColor}`;
-        
+
         return dmcData
             .map(color => ({
                 ...color,
@@ -76,9 +76,9 @@ function Embroidery() {
     const columns = [
         { field: 'floss', headerName: 'DMC Number', width: 130 },
         { field: 'name', headerName: 'Color Name', width: 200 },
-        { 
-            field: 'hex', 
-            headerName: 'Color', 
+        {
+            field: 'hex',
+            headerName: 'Color',
             width: 130,
             renderCell: (params) => (
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -121,10 +121,10 @@ function Embroidery() {
 
     const getRowClassName = (params) => {
         if (!searchColor || !isValidHex(searchColor)) return '';
-        
+
         const isExactMatch = params.row.hex.toLowerCase() === (searchColor.startsWith('#') ? searchColor : `#${searchColor}`).toLowerCase();
         const isCloseMatch = closestColors.includes(params.row.floss);
-        
+
         if (isExactMatch) return 'exact-match-row';
         if (isCloseMatch) return 'close-match-row';
         return '';
@@ -136,23 +136,25 @@ function Embroidery() {
                 <h1>DMC Floss Colors</h1>
                 <div className="color-search" style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
                     <TextField
-                        label="Search by Hex Color"
+                        label="Search by HEX color or floss number"
                         value={searchColor}
                         onChange={handleColorSearch}
                         error={!!error}
                         helperText={error}
                         placeholder="Enter hex color (e.g., FF0000)"
-                        sx={{ marginBottom: 2, width: '250px' }}
+                        sx={{ marginBottom: 2, width: '300px' }}
                     />
-                    <IconButton 
+                    <IconButton
                         onClick={handleColorPickerClick}
-                        sx={{ 
+                        sx={{
                             mt: 1,
                             backgroundColor: searchColor || '#fff',
                             '&:hover': { backgroundColor: searchColor || '#f0f0f0' }
                         }}
                     >
-                        <ColorLensIcon />
+                        <Tooltip title="Select HEX color here">
+                            <ColorLensIcon />
+                        </Tooltip>
                     </IconButton>
                     <Popover
                         open={open}
@@ -176,16 +178,16 @@ function Embroidery() {
                         />
                     </Popover>
                 </div>
-                <div style={{ height: 600, width: '100%' }}>
+                <div style={{ height: '60vh', width: '100%' }}>
                     <DataGrid
                         rows={dmcData.map((item, index) => ({
                             id: index,
                             ...item,
-                            sortPriority: closestColors.includes(item.floss) ? 
-                                (item.hex.toLowerCase() === (searchColor.startsWith('#') ? searchColor : `#${searchColor}`).toLowerCase() ? 1 : 2) 
+                            sortPriority: closestColors.includes(item.floss) ?
+                                (item.hex.toLowerCase() === (searchColor.startsWith('#') ? searchColor : `#${searchColor}`).toLowerCase() ? 1 : 2)
                                 : 3
                         }))
-                        .sort((a, b) => a.sortPriority - b.sortPriority)}
+                            .sort((a, b) => a.sortPriority - b.sortPriority)}
                         columns={columns}
                         pageSize={25}
                         rowsPerPageOptions={[25]}
