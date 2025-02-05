@@ -169,7 +169,7 @@ function Embroidery() {
                 const { data: { text } } = await scheduler.addJob('recognize', canvas);
                 
                 // Find DMC numbers in the text
-                const dmcRegex = /\b\d{3,4}\b/g;
+                const dmcRegex = /\b\d{2,4}\b/g;
                 const numbers = text.match(dmcRegex) || [];
                 
                 numbers.forEach(num => {
