@@ -199,29 +199,10 @@ function Embroidery() {
     };
 
     return (
-        <div className="content-container">
+        <div className="content-container" style={{ marginBottom: '2rem' }}>
             <div className="craft-section">
                 <h1>DMC Floss Colors</h1>
-                <Box sx={{ mb: 2 }}>
-                    <input
-                        accept="application/pdf"
-                        style={{ display: 'none' }}
-                        id="pattern-file-upload"
-                        type="file"
-                        onChange={handlePatternUpload}
-                        disabled={processingFile}
-                    />
-                    <label htmlFor="pattern-file-upload">
-                        <Button
-                            variant="contained"
-                            component="span"
-                            disabled={processingFile}
-                        >
-                            {processingFile ? 'Processing...' : 'Upload Pattern PDF'}
-                        </Button>
-                    </label>
-                </Box>
-                <div className="color-search" style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                <div className="color-search" style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', marginBottom: '20px' }}>
                     <TextField
                         label="Search by HEX color or floss number"
                         value={searchColor}
@@ -264,6 +245,24 @@ function Embroidery() {
                             }}
                         />
                     </Popover>
+                    <input
+                        accept="application/pdf"
+                        style={{ display: 'none' }}
+                        id="pattern-file-upload"
+                        type="file"
+                        onChange={handlePatternUpload}
+                        disabled={processingFile}
+                    />
+                    <label htmlFor="pattern-file-upload">
+                        <Button
+                            variant="contained"
+                            component="span"
+                            disabled={processingFile}
+                            sx={{ mt: 1 }}
+                        >
+                            {processingFile ? 'Processing...' : 'Upload Pattern PDF'}
+                        </Button>
+                    </label>
                 </div>
                 <div style={{ height: '60vh', width: '100%' }}>
                     <DataGrid
