@@ -141,7 +141,10 @@ function Embroidery() {
 
         setProcessingFile(true);
         try {
-            const worker = await createWorker();
+            const worker = await createWorker({
+                logger: m => console.log(m)
+            });
+            await worker.load();
             await worker.loadLanguage('eng');
             await worker.initialize('eng');
 
