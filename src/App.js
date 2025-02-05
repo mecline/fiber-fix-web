@@ -2,8 +2,6 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { useEffect, useState } from 'react';
 import { auth } from './firebase';
 import './App.css';
-
-// Components
 import Login from './components/Login';
 import Register from './components/Register';
 import ForgotPassword from './components/ForgotPassword';
@@ -28,7 +26,14 @@ function App() {
 
   return (
     <Router>
-      <div className="App">
+      <div style={{
+        backgroundImage: "url(pexels_yarn.jpg)",
+        backgroundPosition: 'center',
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        width: '100vw',
+        height: '100vh' }}
+        >
         <Routes>
           <Route 
             path="/login" 
