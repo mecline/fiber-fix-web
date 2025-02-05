@@ -38,6 +38,7 @@ function App() {
         backgroundRepeat: 'no-repeat',
         width: '100vw',
         height: '100vh',
+        overflow: 'hidden',
         '--primary-color': theme.colors.primary,
         '--primary-hover-color': theme.colors.primaryHover,
         '--danger-color': theme.colors.danger,
