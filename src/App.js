@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { theme } from './theme';
 import { useEffect, useState } from 'react';
 import { auth } from './firebase';
 import './App.css';
@@ -36,8 +37,20 @@ function App() {
         backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat',
         width: '100vw',
-        height: '100vh' }}
-        >
+        height: '100vh',
+        '--primary-color': theme.colors.primary,
+        '--primary-hover-color': theme.colors.primaryHover,
+        '--danger-color': theme.colors.danger,
+        '--danger-hover-color': theme.colors.dangerHover,
+        '--text-color': theme.colors.text,
+        '--background-color': theme.colors.background,
+        '--container-background': theme.colors.containerBackground,
+        '--link-color': theme.colors.link,
+        '--error-color': theme.colors.error,
+        '--success-color': theme.colors.success,
+        '--box-shadow': theme.boxShadow,
+        '--border-radius': theme.borderRadius,
+      }}>
         <NavBar user={user} />
         <Routes>
           <Route 
