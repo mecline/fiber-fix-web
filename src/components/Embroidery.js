@@ -1,6 +1,8 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { TextField, IconButton, Popover } from '@mui/material';
+import { TextField, IconButton, Popover, Button } from '@mui/material';
+import { auth } from '../firebase';
+import { initializeUserFloss, updateFlossCount } from '../firebase/db';
 import { HexColorPicker } from 'react-colorful';
 import ColorLensIcon from '@mui/icons-material/ColorLens';
 import dmcData from '../data/dmc_floss_data.json';
@@ -10,6 +12,29 @@ function Embroidery() {
     const [searchColor, setSearchColor] = useState('');
     const [error, setError] = useState('');
     const [anchorEl, setAnchorEl] = useState(null);
+    const [flossCounts, setFlossCounts] = useState({});
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const loadFlossCounts = async () => {
+            if (auth.currentUser) {
+                const counts = await initializeUserFloss(auth.currentUser.uid);
+                setFlossCounts(counts);
+                setLoading(false);
+            }
+        };
+        loadFlossCounts();
+    }, []);
+
+    const handleFlossCount = async (flossNumber, increment) => {
+        if (auth.currentUser) {
+            const newCount = await updateFlossCount(auth.currentUser.uid, flossNumber, increment);
+            setFlossCounts(prev => ({
+                ...prev,
+                [flossNumber]: newCount
+            }));
+        }
+    };
 
     const handleColorPickerClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -67,6 +92,28 @@ function Embroidery() {
                         }}
                     />
                     {params.value}
+                </div>
+            ),
+        },
+        {
+            field: 'count',
+            headerName: 'Inventory',
+            width: 130,
+            renderCell: (params) => (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <Button
+                        onClick={() => handleFlossCount(params.row.floss, -1)}
+                        style={{ minWidth: '30px', padding: '2px 8px' }}
+                    >
+                        {'<'}
+                    </Button>
+                    <span>{flossCounts[params.row.floss] || 0}</span>
+                    <Button
+                        onClick={() => handleFlossCount(params.row.floss, 1)}
+                        style={{ minWidth: '30px', padding: '2px 8px' }}
+                    >
+                        {'>'}
+                    </Button>
                 </div>
             ),
         }
