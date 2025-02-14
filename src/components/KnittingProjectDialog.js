@@ -7,10 +7,14 @@ import {
     Button,
     TextField,
     MenuItem,
-    Grid
+    Grid,
+    Typography,
+    Box
 } from '@mui/material';
+import { Upload as UploadIcon } from '@mui/icons-material';
 
 function KnittingProjectDialog({ open, onClose, onSave, project = null }) {
+    const [patternFile, setPatternFile] = useState(null);
     const [formData, setFormData] = useState({
         name: '',
         pattern: '',
@@ -35,8 +39,15 @@ function KnittingProjectDialog({ open, onClose, onSave, project = null }) {
     };
 
     const handleSubmit = () => {
-        onSave(formData);
+        onSave(formData, patternFile);
         onClose();
+        setPatternFile(null);
+    };
+
+    const handleFileChange = (event) => {
+        if (event.target.files[0]) {
+            setPatternFile(event.target.files[0]);
+        }
     };
 
     return (
@@ -105,6 +116,28 @@ function KnittingProjectDialog({ open, onClose, onSave, project = null }) {
                             multiline
                             rows={4}
                         />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                            <Button
+                                variant="outlined"
+                                component="label"
+                                startIcon={<UploadIcon />}
+                            >
+                                Upload Pattern
+                                <input
+                                    type="file"
+                                    hidden
+                                    onChange={handleFileChange}
+                                    accept=".pdf,.jpg,.jpeg,.png"
+                                />
+                            </Button>
+                            {(patternFile || project?.patternFileName) && (
+                                <Typography variant="body2">
+                                    {patternFile ? patternFile.name : project.patternFileName}
+                                </Typography>
+                            )}
+                        </Box>
                     </Grid>
                 </Grid>
             </DialogContent>

@@ -22,14 +22,14 @@ function Knitting() {
         }
     };
 
-    const handleCreateProject = async (projectData) => {
+    const handleCreateProject = async (projectData, patternFile) => {
         if (auth.currentUser) {
-            await createKnittingProject(auth.currentUser.uid, projectData);
+            await createKnittingProject(auth.currentUser.uid, projectData, patternFile);
             loadProjects();
         }
     };
 
-    const handleUpdateProject = async (projectData) => {
+    const handleUpdateProject = async (projectData, patternFile) => {
         if (auth.currentUser) {
             await updateKnittingProject(auth.currentUser.uid, selectedProject.id, projectData);
             loadProjects();
@@ -77,6 +77,12 @@ function Knitting() {
                                 project={project}
                                 onEdit={handleEdit}
                                 onDelete={handleDeleteProject}
+                                onRowCounterUpdate={async (projectId, count, target, repeat) => {
+                                    if (auth.currentUser) {
+                                        await updateRowCounter(auth.currentUser.uid, projectId, count, target, repeat);
+                                        loadProjects();
+                                    }
+                                }}
                             />
                         </Grid>
                     ))}

@@ -1,8 +1,10 @@
 import React from 'react';
-import { Card, CardContent, CardActions, Typography, Button, Box } from '@mui/material';
-import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
+import { Card, CardContent, CardActions, Typography, Button, Box, IconButton } from '@mui/material';
+import { Edit as EditIcon, Delete as DeleteIcon, Calculate as CalculateIcon, Description as DescriptionIcon } from '@mui/icons-material';
+import RowCounter from './RowCounter';
 
-function KnittingProjectCard({ project, onEdit, onDelete }) {
+function KnittingProjectCard({ project, onEdit, onDelete, onRowCounterUpdate }) {
+    const [rowCounterOpen, setRowCounterOpen] = useState(false);
     return (
         <Card sx={{ minWidth: 275, m: 1 }}>
             <CardContent>
@@ -28,7 +30,23 @@ function KnittingProjectCard({ project, onEdit, onDelete }) {
                 )}
             </CardContent>
             <CardActions>
-                <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%', gap: 1 }}>
+                    {project.patternUrl && (
+                        <IconButton
+                            size="small"
+                            onClick={() => window.open(project.patternUrl, '_blank')}
+                            title="View Pattern"
+                        >
+                            <DescriptionIcon />
+                        </IconButton>
+                    )}
+                    <IconButton
+                        size="small"
+                        onClick={() => setRowCounterOpen(true)}
+                        title="Row Counter"
+                    >
+                        <CalculateIcon />
+                    </IconButton>
                     <Button 
                         size="small" 
                         startIcon={<EditIcon />}
@@ -46,6 +64,14 @@ function KnittingProjectCard({ project, onEdit, onDelete }) {
                     </Button>
                 </Box>
             </CardActions>
+            <RowCounter
+                open={rowCounterOpen}
+                onClose={() => setRowCounterOpen(false)}
+                projectId={project.id}
+                initialCount={project.rowCount || 0}
+                initialTarget={project.rowTarget || 0}
+                onSave={onRowCounterUpdate}
+            />
         </Card>
     );
 }
