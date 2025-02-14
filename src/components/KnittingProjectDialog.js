@@ -20,11 +20,22 @@ function KnittingProjectDialog({ open, onClose, onSave, project = null }) {
         notes: ''
     });
 
+    const initialFormData = {
+        name: '',
+        pattern: '',
+        status: 'Not Started',
+        needleSize: '',
+        yarn: '',
+        notes: ''
+    };
+
     useEffect(() => {
         if (project) {
             setFormData(project);
+        } else {
+            setFormData(initialFormData);
         }
-    }, [project]);
+    }, [project, open]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
