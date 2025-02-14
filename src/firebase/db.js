@@ -1,4 +1,4 @@
-import { getFirestore, doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
+import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, deleteDoc, getDocs } from "firebase/firestore";
 
 const db = getFirestore();
 
@@ -19,6 +19,38 @@ export const initializeUserFloss = async (userId) => {
     }
     
     return snapshot.data().floss;
+};
+
+export const createKnittingProject = async (userId, projectData) => {
+    const projectRef = doc(collection(db, "users", userId, "knittingProjects"));
+    await setDoc(projectRef, {
+        ...projectData,
+        createdAt: new Date(),
+        updatedAt: new Date()
+    });
+    return projectRef.id;
+};
+
+export const updateKnittingProject = async (userId, projectId, projectData) => {
+    const projectRef = doc(db, "users", userId, "knittingProjects", projectId);
+    await updateDoc(projectRef, {
+        ...projectData,
+        updatedAt: new Date()
+    });
+};
+
+export const deleteKnittingProject = async (userId, projectId) => {
+    const projectRef = doc(db, "users", userId, "knittingProjects", projectId);
+    await deleteDoc(projectRef);
+};
+
+export const getKnittingProjects = async (userId) => {
+    const projectsRef = collection(db, "users", userId, "knittingProjects");
+    const snapshot = await getDocs(projectsRef);
+    return snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+    }));
 };
 
 export const updateFlossCount = async (userId, flossNumber, increment) => {
