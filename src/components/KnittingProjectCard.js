@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardActions, Typography, Button, Box, IconButton } from '@mui/material';
-import { Edit as EditIcon, Delete as DeleteIcon, Calculate as CalculateIcon, Description as DescriptionIcon, Download as DownloadIcon } from '@mui/icons-material';
+import { Edit as EditIcon, Delete as DeleteIcon, Calculate as CalculateIcon } from '@mui/icons-material';
 import RowCounter from './RowCounter';
 
 function KnittingProjectCard({ project, onEdit, onDelete, onRowCounterUpdate }) {
@@ -31,31 +31,6 @@ function KnittingProjectCard({ project, onEdit, onDelete, onRowCounterUpdate }) 
             </CardContent>
             <CardActions>
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%', gap: 1 }}>
-                    {project.patternUrl && (
-                        <>
-                            <IconButton
-                                size="small"
-                                onClick={() => window.open(project.patternUrl, '_blank')}
-                                title="View Pattern"
-                            >
-                                <DescriptionIcon />
-                            </IconButton>
-                            <IconButton
-                                size="small"
-                                onClick={() => {
-                                    const link = document.createElement('a');
-                                    link.href = project.patternUrl;
-                                    link.download = project.patternFileName || 'pattern';
-                                    document.body.appendChild(link);
-                                    link.click();
-                                    document.body.removeChild(link);
-                                }}
-                                title="Download Pattern"
-                            >
-                                <DownloadIcon />
-                            </IconButton>
-                        </>
-                    )}
                     <IconButton
                         size="small"
                         onClick={() => setRowCounterOpen(true)}

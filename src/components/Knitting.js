@@ -22,16 +22,16 @@ function Knitting() {
         }
     };
 
-    const handleCreateProject = async (projectData, patternFile) => {
+    const handleCreateProject = async (projectData) => {
         if (auth.currentUser) {
-            await createKnittingProject(auth.currentUser.uid, projectData, patternFile);
+            await createKnittingProject(auth.currentUser.uid, projectData);
             loadProjects();
         }
     };
 
-    const handleUpdateProject = async (projectData, patternFile) => {
+    const handleUpdateProject = async (projectData) => {
         if (auth.currentUser) {
-            await updateKnittingProject(auth.currentUser.uid, selectedProject.id, projectData, patternFile);
+            await updateKnittingProject(auth.currentUser.uid, selectedProject.id, projectData);
             loadProjects();
         }
     };
