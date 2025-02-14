@@ -38,21 +38,22 @@ function RowCounter({ open, onClose, projectId, initialCount = 0, initialTarget 
     const handleSubCounterIncrement = (index) => {
         const newSubCounters = [...subCounters];
         newSubCounters[index].count++;
+        let newMainCount = count;
         
         if (newSubCounters[index].count >= newSubCounters[index].target && newSubCounters[index].target > 0) {
             // Reset sub counter
             newSubCounters[index].count = 0;
             
             // Increment main counter
-            let newCount = count + 1;
-            if (repeat && newCount > target) {
-                newCount = 1;
+            newMainCount = count + 1;
+            if (repeat && newMainCount > target) {
+                newMainCount = 1;
             }
-            setCount(newCount);
+            setCount(newMainCount);
         }
         
         setSubCounters(newSubCounters);
-        saveCounterState(count, target, repeat, newSubCounters);
+        saveCounterState(newMainCount, target, repeat, newSubCounters);
     };
 
     const handleSubCounterDecrement = (index) => {
@@ -199,14 +200,40 @@ function RowCounter({ open, onClose, projectId, initialCount = 0, initialTarget 
                             >
                                 <RemoveIcon />
                             </IconButton>
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-                                <IconButton onClick={() => handleSubCounterDecrement(index)}>
-                                    <RemoveIcon />
-                                </IconButton>
-                                <Typography variant="h5">{subCounter.count}</Typography>
-                                <IconButton onClick={() => handleSubCounterIncrement(index)}>
-                                    <AddIcon />
-                                </IconButton>
+                            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, mb: 2 }}>
+                                <Box sx={{ position: 'relative', display: 'inline-flex', mb: 2 }}>
+                                    <CircularProgress
+                                        variant="determinate"
+                                        value={subCounter.target > 0 ? (subCounter.count / subCounter.target) * 100 : 0}
+                                        size={60}
+                                        sx={{ color: 'secondary.main' }}
+                                    />
+                                    <Box
+                                        sx={{
+                                            top: 0,
+                                            left: 0,
+                                            bottom: 0,
+                                            right: 0,
+                                            position: 'absolute',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                        }}
+                                    >
+                                        <Typography variant="caption" component="div" color="text.secondary">
+                                            {`${subCounter.count}/${subCounter.target}`}
+                                        </Typography>
+                                    </Box>
+                                </Box>
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                                    <IconButton onClick={() => handleSubCounterDecrement(index)}>
+                                        <RemoveIcon />
+                                    </IconButton>
+                                    <Typography variant="h5">{subCounter.count}</Typography>
+                                    <IconButton onClick={() => handleSubCounterIncrement(index)}>
+                                        <AddIcon />
+                                    </IconButton>
+                                </Box>
                             </Box>
                             <TextField
                                 label="Target"
