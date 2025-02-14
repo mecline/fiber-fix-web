@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Card, CardContent, CardActions, Typography, Button, Box, IconButton } from '@mui/material';
-import { Edit as EditIcon, Delete as DeleteIcon, Calculate as CalculateIcon } from '@mui/icons-material';
+import { Card, CardContent, CardActions, Typography, Button, Box, IconButton, Tooltip } from '@mui/material';
+import { Edit as EditIcon, Delete as DeleteIcon, UnfoldMore } from '@mui/icons-material';
 import RowCounter from './RowCounter';
 
 function KnittingProjectCard({ project, onEdit, onDelete, onRowCounterUpdate }) {
@@ -31,28 +31,33 @@ function KnittingProjectCard({ project, onEdit, onDelete, onRowCounterUpdate }) 
             </CardContent>
             <CardActions>
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%', gap: 1 }}>
-                    <IconButton
-                        size="small"
-                        onClick={() => setRowCounterOpen(true)}
-                        title="Row Counter"
-                    >
-                        <CalculateIcon />
-                    </IconButton>
-                    <Button 
-                        size="small" 
-                        startIcon={<EditIcon />}
-                        onClick={() => onEdit(project)}
-                    >
-                        Edit
-                    </Button>
-                    <Button 
-                        size="small" 
-                        color="error" 
-                        startIcon={<DeleteIcon />}
-                        onClick={() => onDelete(project.id)}
-                    >
-                        Delete
-                    </Button>
+                    <Tooltip title="Row Counter">
+                        <IconButton
+                            size="small"
+                            onClick={() => setRowCounterOpen(true)}
+                            title="Row Counter"
+                        >
+                            <UnfoldMore />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Edit">
+                        <IconButton
+                            size="small"
+                            onClick={() => onEdit(project)}
+                            title="Edit"
+                        >
+                            <EditIcon />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Delete">
+                        <IconButton
+                            size="small"
+                            onClick={() => onDelete(project.id)}
+                            title="Delete"
+                        >
+                            <DeleteIcon />
+                        </IconButton>
+                    </Tooltip>
                 </Box>
             </CardActions>
             <RowCounter
