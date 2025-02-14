@@ -171,15 +171,15 @@ function RowCounter({ open, onClose, projectId, initialCount = 0, initialTarget 
                         label="Repeat pattern"
                     />
 
-                    {showAddCounter && (
-                        <Button
-                            variant="outlined"
-                            onClick={handleAddSubCounter}
-                            sx={{ mt: 2 }}
-                        >
-                            Add Sub Counter
-                        </Button>
-                    )}
+                    <Button
+                        variant="outlined"
+                        onClick={handleAddSubCounter}
+                        sx={{ mt: 2 }}
+                        disabled={!showAddCounter}
+                        fullWidth
+                    >
+                        {subCounters.length === 0 ? 'Add Sub Counter' : 'Add Another Sub Counter'}
+                    </Button>
 
                     {subCounters.map((subCounter, index) => (
                         <Box key={index} sx={{ 
