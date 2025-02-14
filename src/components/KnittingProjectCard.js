@@ -62,6 +62,7 @@ function KnittingProjectCard({ project, onEdit, onDelete, onRowCounterUpdate }) 
                 initialCount={project.rowCount || 0}
                 initialTarget={project.rowTarget || 0}
                 onSave={onRowCounterUpdate}
+                project={project}
             />
         </Card>
     );

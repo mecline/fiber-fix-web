@@ -45,12 +45,13 @@ export const updateKnittingProject = async (userId, projectId, projectData) => {
     });
 };
 
-export const updateRowCounter = async (userId, projectId, count, target, repeat) => {
+export const updateRowCounter = async (userId, projectId, counterData) => {
     const projectRef = doc(db, "users", userId, "knittingProjects", projectId);
     await updateDoc(projectRef, {
-        rowCount: count,
-        rowTarget: target,
-        repeatPattern: repeat,
+        rowCount: counterData.count,
+        rowTarget: counterData.target,
+        repeatPattern: counterData.repeat,
+        subCounters: counterData.subCounters,
         updatedAt: new Date()
     });
 };

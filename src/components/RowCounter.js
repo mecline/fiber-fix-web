@@ -13,15 +13,76 @@ import {
 } from '@mui/material';
 import { Add as AddIcon, Remove as RemoveIcon } from '@mui/icons-material';
 
-function RowCounter({ open, onClose, projectId, initialCount = 0, initialTarget = 0, onSave }) {
+function RowCounter({ open, onClose, projectId, initialCount = 0, initialTarget = 0, onSave, project }) {
     const [count, setCount] = useState(initialCount);
     const [target, setTarget] = useState(initialTarget);
     const [repeat, setRepeat] = useState(false);
+    const [subCounters, setSubCounters] = useState(project?.subCounters || []);
+    const [showAddCounter, setShowAddCounter] = useState(true);
 
     useEffect(() => {
         setCount(initialCount);
         setTarget(initialTarget);
-    }, [initialCount, initialTarget]);
+        setSubCounters(project?.subCounters || []);
+        setShowAddCounter(project?.subCounters?.length < 2);
+    }, [initialCount, initialTarget, project]);
+
+    const handleAddSubCounter = () => {
+        const newSubCounters = [...subCounters, { count: 0, target: 0 }];
+        setSubCounters(newSubCounters);
+        setShowAddCounter(newSubCounters.length < 2);
+        saveCounterState(count, target, repeat, newSubCounters);
+    };
+
+    const handleSubCounterIncrement = (index) => {
+        const newSubCounters = [...subCounters];
+        newSubCounters[index].count++;
+        
+        if (newSubCounters[index].count >= newSubCounters[index].target && newSubCounters[index].target > 0) {
+            // Reset sub counter
+            newSubCounters[index].count = 0;
+            
+            // Increment main counter
+            let newCount = count + 1;
+            if (repeat && newCount > target) {
+                newCount = 1;
+            }
+            setCount(newCount);
+        }
+        
+        setSubCounters(newSubCounters);
+        saveCounterState(count, target, repeat, newSubCounters);
+    };
+
+    const handleSubCounterDecrement = (index) => {
+        const newSubCounters = [...subCounters];
+        newSubCounters[index].count = Math.max(0, newSubCounters[index].count - 1);
+        setSubCounters(newSubCounters);
+        saveCounterState(count, target, repeat, newSubCounters);
+    };
+
+    const handleSubCounterTargetChange = (index, value) => {
+        const newSubCounters = [...subCounters];
+        newSubCounters[index].target = parseInt(value) || 0;
+        setSubCounters(newSubCounters);
+        saveCounterState(count, target, repeat, newSubCounters);
+    };
+
+    const handleRemoveSubCounter = (index) => {
+        const newSubCounters = subCounters.filter((_, i) => i !== index);
+        setSubCounters(newSubCounters);
+        setShowAddCounter(newSubCounters.length < 2);
+        saveCounterState(count, target, repeat, newSubCounters);
+    };
+
+    const saveCounterState = (mainCount, mainTarget, repeatPattern, subCountersState) => {
+        onSave(projectId, {
+            count: mainCount,
+            target: mainTarget,
+            repeat: repeatPattern,
+            subCounters: subCountersState
+        });
+    };
 
     const handleIncrement = () => {
         let newCount = count + 1;
@@ -29,24 +90,24 @@ function RowCounter({ open, onClose, projectId, initialCount = 0, initialTarget 
             newCount = 1;
         }
         setCount(newCount);
-        onSave(projectId, newCount, target, repeat);
+        saveCounterState(newCount, target, repeat, subCounters);
     };
 
     const handleDecrement = () => {
         const newCount = Math.max(0, count - 1);
         setCount(newCount);
-        onSave(projectId, newCount, target, repeat);
+        saveCounterState(newCount, target, repeat, subCounters);
     };
 
     const handleTargetChange = (e) => {
         const newTarget = parseInt(e.target.value) || 0;
         setTarget(newTarget);
-        onSave(projectId, count, newTarget, repeat);
+        saveCounterState(count, newTarget, repeat, subCounters);
     };
 
     const handleRepeatChange = (e) => {
         setRepeat(e.target.checked);
-        onSave(projectId, count, target, e.target.checked);
+        saveCounterState(count, target, e.target.checked, subCounters);
     };
 
     const progress = target > 0 ? (count / target) * 100 : 0;
