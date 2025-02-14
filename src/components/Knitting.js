@@ -31,7 +31,7 @@ function Knitting() {
 
     const handleUpdateProject = async (projectData, patternFile) => {
         if (auth.currentUser) {
-            await updateKnittingProject(auth.currentUser.uid, selectedProject.id, projectData);
+            await updateKnittingProject(auth.currentUser.uid, selectedProject.id, projectData, patternFile);
             loadProjects();
         }
     };

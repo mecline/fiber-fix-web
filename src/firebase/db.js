@@ -53,29 +53,31 @@ export const updateKnittingProject = async (userId, projectId, projectData, patt
     const projectRef = doc(db, "users", userId, "knittingProjects", projectId);
     const currentData = (await getDoc(projectRef)).data();
 
-    let patternUrl = currentData.patternUrl;
-    let patternFileName = currentData.patternFileName;
+    const updateData = { ...projectData, updatedAt: new Date() };
 
     if (patternFile) {
         // Delete old pattern file if it exists
         if (currentData.patternUrl) {
             const oldStorageRef = ref(storage, `users/${userId}/patterns/${projectId}/${currentData.patternFileName}`);
-            await deleteObject(oldStorageRef);
+            try {
+                await deleteObject(oldStorageRef);
+            } catch (error) {
+                console.log('No existing file to delete or error deleting:', error);
+            }
         }
 
         // Upload new pattern file
         const storageRef = ref(storage, `users/${userId}/patterns/${projectId}/${patternFile.name}`);
         await uploadBytes(storageRef, patternFile);
-        patternUrl = await getDownloadURL(storageRef);
-        patternFileName = patternFile.name;
+        updateData.patternUrl = await getDownloadURL(storageRef);
+        updateData.patternFileName = patternFile.name;
+    } else {
+        // Keep existing pattern data if no new file
+        updateData.patternUrl = currentData.patternUrl || null;
+        updateData.patternFileName = currentData.patternFileName || null;
     }
 
-    await updateDoc(projectRef, {
-        ...projectData,
-        patternUrl,
-        patternFileName,
-        updatedAt: new Date()
-    });
+    await updateDoc(projectRef, updateData);
 };
 
 export const updateRowCounter = async (userId, projectId, count, target, repeat) => {
