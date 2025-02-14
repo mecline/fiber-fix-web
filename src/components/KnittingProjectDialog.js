@@ -10,24 +10,17 @@ import {
     Grid
 } from '@mui/material';
 
-function KnittingProjectDialog({ open, onClose, onSave, project = null }) {
-    const [formData, setFormData] = useState({
-        name: '',
-        pattern: '',
-        status: 'Not Started',
-        needleSize: '',
-        yarn: '',
-        notes: ''
-    });
+const initialFormData = {
+    name: '',
+    pattern: '',
+    status: 'Not Started',
+    needleSize: '',
+    yarn: '',
+    notes: ''
+};
 
-    const initialFormData = {
-        name: '',
-        pattern: '',
-        status: 'Not Started',
-        needleSize: '',
-        yarn: '',
-        notes: ''
-    };
+function KnittingProjectDialog({ open, onClose, onSave, project = null }) {
+    const [formData, setFormData] = useState(initialFormData);
 
     useEffect(() => {
         if (project) {
