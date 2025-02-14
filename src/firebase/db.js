@@ -92,16 +92,49 @@ export const updateRowCounter = async (userId, projectId, count, target, repeat)
 
 export const deleteKnittingProject = async (userId, projectId) => {
     const projectRef = doc(db, "users", userId, "knittingProjects", projectId);
+    
+    // Get the project data to check for pattern file
+    const projectDoc = await getDoc(projectRef);
+    const projectData = projectDoc.data();
+    
+    // Delete pattern file if it exists
+    if (projectData?.patternFileName) {
+        const storageRef = ref(storage, `users/${userId}/patterns/${projectId}/${projectData.patternFileName}`);
+        try {
+            await deleteObject(storageRef);
+        } catch (error) {
+            console.log('Error deleting pattern file:', error);
+        }
+    }
+    
+    // Delete the project document
     await deleteDoc(projectRef);
 };
 
 export const getKnittingProjects = async (userId) => {
     const projectsRef = collection(db, "users", userId, "knittingProjects");
     const snapshot = await getDocs(projectsRef);
-    return snapshot.docs.map(doc => ({
+    
+    // Get all projects with their data
+    const projects = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
     }));
+
+    // Update pattern URLs if they exist
+    for (let project of projects) {
+        if (project.patternFileName) {
+            try {
+                const storageRef = ref(storage, `users/${userId}/patterns/${project.id}/${project.patternFileName}`);
+                project.patternUrl = await getDownloadURL(storageRef);
+            } catch (error) {
+                console.log('Error getting pattern URL:', error);
+                project.patternUrl = null;
+            }
+        }
+    }
+
+    return projects;
 };
 
 export const updateFlossCount = async (userId, flossNumber, increment) => {
