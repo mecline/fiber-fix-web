@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, Grid, Typography, Box } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
 import { auth } from '../firebase';
-import { createKnittingProject, updateKnittingProject, deleteKnittingProject, getKnittingProjects } from '../firebase/db';
+import { createKnittingProject, updateKnittingProject, deleteKnittingProject, getKnittingProjects, updateRowCounter } from '../firebase/db';
 import KnittingProjectCard from './KnittingProjectCard';
 import KnittingProjectDialog from './KnittingProjectDialog';
 
