@@ -202,6 +202,7 @@ function Embroidery() {
         <div className="content-container" style={{ marginBottom: '2rem' }}>
             <div className="craft-section">
                 <h1>DMC Floss Colors</h1>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <div className="color-search" style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', marginBottom: '20px' }}>
                     <TextField
                         label="Search by HEX color or floss number"
@@ -253,7 +254,10 @@ function Embroidery() {
                         onChange={handlePatternUpload}
                         disabled={processingFile}
                     />
+                    </div>
+                    <div>
                     <label htmlFor="pattern-file-upload">
+                    <Tooltip title="Tip: only upload the pages with DMC floss numbers for faster load times.">
                         <Button
                             variant="contained"
                             component="span"
@@ -262,7 +266,9 @@ function Embroidery() {
                         >
                             {processingFile ? 'Processing...' : 'Upload Pattern PDF'}
                         </Button>
+                        </Tooltip>
                     </label>
+                    </div>
                 </div>
                 <div style={{ height: '60vh', width: '100%' }}>
                     <DataGrid

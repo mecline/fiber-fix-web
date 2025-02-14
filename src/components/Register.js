@@ -13,7 +13,7 @@ function Register() {
         e.preventDefault();
         try {
             await createUserWithEmailAndPassword(auth, email, password);
-            navigate('/home');
+            navigate('/');
         } catch (error) {
             setError(error.message);
         }

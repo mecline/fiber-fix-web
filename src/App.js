@@ -6,7 +6,6 @@ import './App.css';
 import Login from './components/Login';
 import Register from './components/Register';
 import ForgotPassword from './components/ForgotPassword';
-import Home from './components/Home';
 import NavBar from './components/NavBar';
 import Embroidery from './components/Embroidery';
 import Knitting from './components/Knitting';
@@ -67,10 +66,6 @@ function App() {
             element={user ? <Navigate to="/embroidery" /> : <ForgotPassword />} 
           />
           <Route 
-            path="/home" 
-            element={user ? <Home /> : <Navigate to="/login" />} 
-          />
-          <Route 
             path="/" 
             element={<Navigate to={user ? "/embroidery" : "/login"} />} 
           />
@@ -88,7 +83,7 @@ function App() {
           />
           <Route 
             path="*" 
-            element={<Navigate to={user ? "/home" : "/login"} />} 
+            element={<Navigate to={user ? "/" : "/login"} />} 
           />
         </Routes>
       </div>
