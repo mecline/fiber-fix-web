@@ -169,6 +169,53 @@ function RowCounter({ open, onClose, projectId, initialCount = 0, initialTarget 
                         }
                         label="Repeat pattern"
                     />
+
+                    {showAddCounter && (
+                        <Button
+                            variant="outlined"
+                            onClick={handleAddSubCounter}
+                            sx={{ mt: 2 }}
+                        >
+                            Add Sub Counter
+                        </Button>
+                    )}
+
+                    {subCounters.map((subCounter, index) => (
+                        <Box key={index} sx={{ 
+                            mt: 3, 
+                            p: 2, 
+                            border: '1px solid #ccc', 
+                            borderRadius: 1,
+                            position: 'relative'
+                        }}>
+                            <Typography variant="subtitle1" sx={{ mb: 1 }}>
+                                Sub Counter {index + 1}
+                            </Typography>
+                            <IconButton
+                                size="small"
+                                onClick={() => handleRemoveSubCounter(index)}
+                                sx={{ position: 'absolute', top: 8, right: 8 }}
+                            >
+                                <RemoveIcon />
+                            </IconButton>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+                                <IconButton onClick={() => handleSubCounterDecrement(index)}>
+                                    <RemoveIcon />
+                                </IconButton>
+                                <Typography variant="h5">{subCounter.count}</Typography>
+                                <IconButton onClick={() => handleSubCounterIncrement(index)}>
+                                    <AddIcon />
+                                </IconButton>
+                            </Box>
+                            <TextField
+                                label="Target"
+                                type="number"
+                                value={subCounter.target}
+                                onChange={(e) => handleSubCounterTargetChange(index, e.target.value)}
+                                size="small"
+                            />
+                        </Box>
+                    ))}
                 </Box>
             </DialogContent>
         </Dialog>
