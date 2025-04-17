@@ -1,5 +1,285 @@
 [
-    {
+  {
+    "floss": "1",
+    "name": "White Tin",
+    "r": 239,
+    "g": 238,
+    "b": 240,
+    "hex": "#efeef0"
+  },
+  {
+    "floss": "2",
+    "name": "Tin",
+    "r": 197,
+    "g": 196,
+    "b": 201,
+    "hex": "#c5c4c9"
+  },
+  {
+    "floss": "3",
+    "name": "Tin Medium",
+    "r": 176,
+    "g": 176,
+    "b": 181,
+    "hex": "#b0b0b5"
+  },
+  {
+    "floss": "4",
+    "name": "Tin Dark",
+    "r": 156,
+    "g": 155,
+    "b": 157,
+    "hex": "#9c9b9d"
+  },
+  {
+    "floss": "5",
+    "name": "Driftwood Light",
+    "r": 227,
+    "g": 204,
+    "b": 190,
+    "hex": "#e3ccbe"
+  },
+  {
+    "floss": "6",
+    "name": "Driftwood Medium Light",
+    "r": 220,
+    "g": 198,
+    "b": 184,
+    "hex": "#dcc6b8"
+  },
+  {
+    "floss": "7",
+    "name": "Driftwood",
+    "r": 204,
+    "g": 184,
+    "b": 170,
+    "hex": "#ccb8aa"
+  },
+  {
+    "floss": "8",
+    "name": "Driftwood Dark",
+    "r": 157,
+    "g": 125,
+    "b": 113,
+    "hex": "#9d7d71"
+  },
+  {
+    "floss": "9",
+    "name": "Cocoa Very Dark",
+    "r": 85,
+    "g": 32,
+    "b": 20,
+    "hex": "#552014"
+  },
+  {
+    "floss": "10",
+    "name": "Tender Green Very Light",
+    "r": 237,
+    "g": 254,
+    "b": 217,
+    "hex": "#edfed9"
+  },
+  {
+    "floss": "11",
+    "name": "Tender Green Light",
+    "r": 226,
+    "g": 237,
+    "b": 181,
+    "hex": "#e2edb5"
+  },
+  {
+    "floss": "12",
+    "name": "Tender Green",
+    "r": 205,
+    "g": 217,
+    "b": 154,
+    "hex": "#cdd99a"
+  },
+  {
+    "floss": "13",
+    "name": "Nile Green Medium Light",
+    "r": 191,
+    "g": 246,
+    "b": 224,
+    "hex": "#bff6e0"
+  },
+  {
+    "floss": "14",
+    "name": "Apple Green Pale",
+    "r": 208,
+    "g": 251,
+    "b": 178,
+    "hex": "#d0fbb2"
+  },
+  {
+    "floss": "15",
+    "name": "Apple Green",
+    "r": 209,
+    "g": 237,
+    "b": 164,
+    "hex": "#d1eda4"
+  },
+  {
+    "floss": "16",
+    "name": "Chartreuse Light",
+    "r": 164,
+    "g": 214,
+    "b": 124,
+    "hex": "#a4d67c"
+  },
+  {
+    "floss": "17",
+    "name": "Yellow Plum Light",
+    "r": 229,
+    "g": 226,
+    "b": 114,
+    "hex": "#e5e272"
+  },
+  {
+    "floss": "18",
+    "name": "Yellow Plum",
+    "r": 217,
+    "g": 213,
+    "b": 109,
+    "hex": "#d9d56d"
+  },
+  {
+    "floss": "19",
+    "name": "Autumn Gold Medium Light",
+    "r": 247,
+    "g": 201,
+    "b": 95,
+    "hex": "#f7c95f"
+  },
+  {
+    "floss": "20",
+    "name": "Shrimp",
+    "r": 247,
+    "g": 175,
+    "b": 147,
+    "hex": "#f7af93"
+  },
+  {
+    "floss": "21",
+    "name": "Alizarin Light",
+    "r": 215,
+    "g": 153,
+    "b": 130,
+    "hex": "#d79982"
+  },
+  {
+    "floss": "22",
+    "name": "Alizarin",
+    "r": 188,
+    "g": 96,
+    "b": 78,
+    "hex": "#bc604e"
+  },
+  {
+    "floss": "23",
+    "name": "Apple Blossom",
+    "r": 237,
+    "g": 226,
+    "b": 237,
+    "hex": "#ede2ed"
+  },
+  {
+    "floss": "24",
+    "name": "White Lavender",
+    "r": 224,
+    "g": 215,
+    "b": 238,
+    "hex": "#e0d7ee"
+  },
+  {
+    "floss": "25",
+    "name": "Lavender Ultra Light",
+    "r": 218,
+    "g": 210,
+    "b": 233,
+    "hex": "#dad2e9"
+  },
+  {
+    "floss": "26",
+    "name": "Lavender Pale",
+    "r": 207,
+    "g": 200,
+    "b": 222,
+    "hex": "#cfc8de"
+  },
+  {
+    "floss": "27",
+    "name": "White Violet",
+    "r": 233,
+    "g": 236,
+    "b": 252,
+    "hex": "#e9ecfc"
+  },
+  {
+    "floss": "28",
+    "name": "Eggplant Medium Light",
+    "r": 125,
+    "g": 78,
+    "b": 146,
+    "hex": "#7d4e92"
+  },
+  {
+    "floss": "29",
+    "name": "Eggplant",
+    "r": 103,
+    "g": 64,
+    "b": 118,
+    "hex": "#674076"
+  },
+  {
+    "floss": "30",
+    "name": "Blueberry Medium Light",
+    "r": 109,
+    "g": 84,
+    "b": 211,
+    "hex": "#6d54d3"
+  },
+  {
+    "floss": "31",
+    "name": "Blueberry",
+    "r": 88,
+    "g": 52,
+    "b": 163,
+    "hex": "#5834a3"
+  },
+  {
+    "floss": "32",
+    "name": "Blueberry Dark",
+    "r": 77,
+    "g": 46,
+    "b": 138,
+    "hex": "#4d2e8a"
+  },
+  {
+    "floss": "33",
+    "name": "Fuchsia",
+    "r": 217,
+    "g": 83,
+    "b": 159,
+    "hex": "#d9539f"
+  },
+  {
+    "floss": "34",
+    "name": "Fuchsia Dark",
+    "r": 174,
+    "g": 66,
+    "b": 128,
+    "hex": "#ae4280"
+  },
+  {
+    "floss": "35",
+    "name": "Fuchsia Very Dark",
+    "r": 115,
+    "g": 43,
+    "b": 85,
+    "hex": "#732b55"
+  },
+  {
       "floss": "3713",
       "name": "Salmon Very Light",
       "r": 255,
@@ -698,7 +978,7 @@
       "r": 136,
       "g": 62,
       "b": 67,
-      "hex": "#8.83E+45",
+      "hex": "#883E45",
       "row": "row 04-07"
     },
     {
@@ -1985,7 +2265,7 @@
       "r": 24,
       "g": 126,
       "b": 86,
-      "hex": "#1.87E+58",
+      "hex": "#187E58",
       "row": "row 10-06"
     },
     {
@@ -2210,7 +2490,7 @@
       "r": 5,
       "g": 101,
       "b": 23,
-      "hex": "#56517",
+      "hex": "#056517",
       "row": "row 11-06"
     },
     {
@@ -3079,7 +3359,7 @@
     },
     {
       "floss": "606",
-      "name": "Orange?Red Bright",
+      "name": "Orange - Red Bright",
       "r": 250,
       "g": 50,
       "b": 3,
@@ -3169,7 +3449,7 @@
     },
     {
       "floss": "919",
-      "name": "Red?Copper",
+      "name": "Red - Copper",
       "r": 166,
       "g": 69,
       "b": 16,
@@ -3178,7 +3458,7 @@
     },
     {
       "floss": "918",
-      "name": "Red?Copper Dark",
+      "name": "Red - Copper Dark",
       "r": 130,
       "g": 52,
       "b": 10,
@@ -3623,7 +3903,7 @@
       "r": 152,
       "g": 94,
       "b": 51,
-      "hex": "#9.85E+35",
+      "hex": "#985e33",
       "row": "row 17-13"
     },
     {
@@ -4082,7 +4362,7 @@
       "r": 0,
       "g": 0,
       "b": 0,
-      "hex": "#0",
+      "hex": "#000000",
       "row": "row 19-16"
     }
   ]
