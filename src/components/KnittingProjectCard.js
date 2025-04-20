@@ -1,76 +1,202 @@
 import React, { useState } from 'react';
-import { Card, CardContent, CardActions, Typography, Box, IconButton, Tooltip } from '@mui/material';
-import { Edit as EditIcon, Delete as DeleteIcon, UnfoldMore } from '@mui/icons-material';
+import { 
+  CardContent, 
+  CardActions, 
+  Typography, 
+  Box, 
+  IconButton, 
+  Tooltip,
+  LinearProgress,
+  Grid,
+  Divider,
+  Collapse
+} from '@mui/material';
+import { 
+  Edit as EditIcon, 
+  Delete as DeleteIcon, 
+  ExpandMore as ExpandMoreIcon,
+  ExpandLess as ExpandLessIcon,
+  Timer as TimerIcon,
+  StraightenOutlined as StraightenOutlinedIcon,
+  ColorLens as ColorLensIcon
+} from '@mui/icons-material';
 import RowCounter from './RowCounter';
+import { theme as customTheme } from '../theme';
 
 function KnittingProjectCard({ project, onEdit, onDelete, onRowCounterUpdate }) {
-    const [rowCounterOpen, setRowCounterOpen] = useState(false);
-    return (
-        <Card sx={{ minWidth: 275, m: 1 }}>
-            <CardContent>
-                <Typography variant="h5" component="div">
-                    {project.name}
-                </Typography>
-                <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                    Pattern: {project.pattern || 'Not specified'}
-                </Typography>
-                <Typography variant="body2">
-                    Status: {project.status}
-                </Typography>
-                <Typography variant="body2">
-                    Needle Size: {project.needleSize}
-                </Typography>
-                <Typography variant="body2">
-                    Yarn: {project.yarn}
-                </Typography>
-                {project.notes && (
-                    <Typography variant="body2" sx={{ mt: 1 }}>
-                        Notes: {project.notes}
-                    </Typography>
-                )}
-            </CardContent>
-            <CardActions>
-                <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%', gap: 1 }}>
-                    <Tooltip title="Row Counter">
-                        <IconButton
-                            size="small"
-                            onClick={() => setRowCounterOpen(true)}
-                            title="Row Counter"
-                        >
-                            <UnfoldMore />
-                        </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Edit">
-                        <IconButton
-                            size="small"
-                            onClick={() => onEdit(project)}
-                            title="Edit"
-                        >
-                            <EditIcon />
-                        </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Delete">
-                        <IconButton
-                            size="small"
-                            onClick={() => onDelete(project.id)}
-                            title="Delete"
-                        >
-                            <DeleteIcon />
-                        </IconButton>
-                    </Tooltip>
-                </Box>
-            </CardActions>
-            <RowCounter
-                open={rowCounterOpen}
-                onClose={() => setRowCounterOpen(false)}
-                projectId={project.id}
-                initialCount={project.rowCount || 0}
-                initialTarget={project.rowTarget || 0}
-                onSave={onRowCounterUpdate}
-                project={project}
+  const [rowCounterOpen, setRowCounterOpen] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
+  const toggleExpand = () => {
+    setExpanded(!expanded);
+  };
+
+  const handleDelete = () => {
+    if (confirmDelete) {
+      onDelete(project.id);
+    } else {
+      setConfirmDelete(true);
+      // Auto-reset after 3 seconds
+      setTimeout(() => {
+        setConfirmDelete(false);
+      }, 3000);
+    }
+  };
+
+  const getProgressPercentage = () => {
+    if (!project.rowTarget || project.rowTarget <= 0) return 0;
+    return Math.min(100, Math.round((project.rowCount / project.rowTarget) * 100));
+  };
+  
+  const progressPercentage = getProgressPercentage();
+
+  return (
+    <>
+      <CardContent sx={{ flexGrow: 1, pt: 0 }}>
+        {project.rowTarget > 0 && (
+          <Box sx={{ mt: 1, mb: 2 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
+              <Typography variant="body2" color="textSecondary">
+                Progress
+              </Typography>
+              <Typography variant="body2" fontWeight="medium">
+                {project.rowCount} / {project.rowTarget} rows ({progressPercentage}%)
+              </Typography>
+            </Box>
+            <LinearProgress 
+              variant="determinate" 
+              value={progressPercentage}
+              sx={{ 
+                height: 8, 
+                borderRadius: 1,
+                backgroundColor: 'rgba(0,0,0,0.05)',
+                '& .MuiLinearProgress-bar': {
+                  backgroundColor: progressPercentage === 100 
+                    ? customTheme.colors.success 
+                    : customTheme.colors.primary
+                }
+              }}
             />
-        </Card>
-    );
+          </Box>
+        )}
+
+        <Grid container spacing={1} sx={{ mt: 1 }}>
+          {project.needleSize && (
+            <Grid item xs={6}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <StraightenOutlinedIcon fontSize="small" color="action" />
+                <Typography variant="body2" noWrap>
+                  {project.needleSize}
+                </Typography>
+              </Box>
+            </Grid>
+          )}
+          
+          {project.yarn && (
+            <Grid item xs={6}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <ColorLensIcon fontSize="small" color="action" />
+                <Typography variant="body2" noWrap>
+                  {project.yarn}
+                </Typography>
+              </Box>
+            </Grid>
+          )}
+        </Grid>
+
+        <Collapse in={expanded} timeout="auto" unmountOnExit>
+          <Box sx={{ mt: 2 }}>
+            {project.pattern && (
+              <Box sx={{ mb: 2 }}>
+                <Typography variant="body2" color="textSecondary" gutterBottom>
+                  Pattern
+                </Typography>
+                <Typography variant="body2">
+                  {project.pattern}
+                </Typography>
+              </Box>
+            )}
+            
+            {project.notes && (
+              <Box>
+                <Typography variant="body2" color="textSecondary" gutterBottom>
+                  Notes
+                </Typography>
+                <Typography variant="body2" sx={{ whiteSpace: 'pre-line' }}>
+                  {project.notes}
+                </Typography>
+              </Box>
+            )}
+          </Box>
+        </Collapse>
+      </CardContent>
+
+      <Box sx={{ flexGrow: 0 }}>
+        <Divider />
+        <CardActions sx={{ justifyContent: 'space-between', px: 2, py: 1 }}>
+          <Box>
+            <Tooltip title={expanded ? "Show less" : "Show more"}>
+              <IconButton onClick={toggleExpand} size="small">
+                {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+              </IconButton>
+            </Tooltip>
+          </Box>
+          
+          <Box sx={{ display: 'flex', gap: 0.5 }}>
+            <Tooltip title="Row Counter">
+              <IconButton
+                size="small"
+                onClick={() => setRowCounterOpen(true)}
+                color="primary"
+              >
+                <TimerIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Edit">
+              <IconButton
+                size="small"
+                onClick={() => onEdit(project)}
+                color="primary"
+              >
+                <EditIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title={confirmDelete ? "Click to confirm delete" : "Delete"}>
+              <IconButton
+                size="small"
+                onClick={handleDelete}
+                color={confirmDelete ? "error" : "default"}
+                sx={{
+                  transition: 'all 0.2s',
+                  ...(confirmDelete && {
+                    backgroundColor: 'error.light',
+                    color: 'error.main',
+                    '&:hover': {
+                      backgroundColor: 'error.main',
+                      color: 'white',
+                    }
+                  })
+                }}
+              >
+                <DeleteIcon />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        </CardActions>
+      </Box>
+
+      <RowCounter
+        open={rowCounterOpen}
+        onClose={() => setRowCounterOpen(false)}
+        projectId={project.id}
+        initialCount={project.rowCount || 0}
+        initialTarget={project.rowTarget || 0}
+        onSave={onRowCounterUpdate}
+        project={project}
+      />
+    </>
+  );
 }
 
 export default KnittingProjectCard;
