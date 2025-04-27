@@ -7,8 +7,12 @@ import {
     Button,
     TextField,
     MenuItem,
-    Grid
+    Grid,
+    Box,
+    Typography,
+    CircularProgress
 } from '@mui/material';
+import FileUploader from './FileUploader'; 
 
 const initialFormData = {
     name: '',
@@ -16,11 +20,15 @@ const initialFormData = {
     status: 'Not Started',
     needleSize: '',
     yarn: '',
-    notes: ''
+    notes: '',
+    coverImageKey: '', 
+    coverImageUrl: '' 
 };
 
 function KnittingProjectDialog({ open, onClose, onSave, project = null }) {
     const [formData, setFormData] = useState(initialFormData);
+    const [isUploading, setIsUploading] = useState(false);
+    const [imageUploading, setImageUploading] = useState(false);
 
     useEffect(() => {
         if (project) {
@@ -36,6 +44,28 @@ function KnittingProjectDialog({ open, onClose, onSave, project = null }) {
             ...prev,
             [name]: value
         }));
+    };
+
+    const handleFileUpload = (fileData) => {
+        setFormData(prev => ({
+            ...prev,
+            coverImageKey: fileData.key,
+            coverImageUrl: fileData.url
+        }));
+    };
+
+    const handleImageUploadSuccess = (file) => {
+        setFormData(prev => ({
+            ...prev,
+            coverImageKey: file.key,
+            coverImageUrl: file.location
+        }));
+        setImageUploading(false);
+    };
+
+    const handleImageUploadError = (error) => {
+        console.error("Image upload error:", error);
+        setImageUploading(false);
     };
 
     const handleSubmit = () => {
@@ -58,6 +88,33 @@ function KnittingProjectDialog({ open, onClose, onSave, project = null }) {
                             required
                         />
                     </Grid>
+
+                    <Grid item xs={12}>
+                        <Typography variant="subtitle1" gutterBottom>Cover Image</Typography>
+
+                        <FileUploader
+                            onFileUpload={handleFileUpload}
+                            onError={(msg) => console.error(msg)}
+                            isLoading={isUploading}
+                            setIsLoading={setIsUploading}
+                        />
+
+                        {formData.coverImageUrl && (
+                            <Box mt={2} textAlign="center">
+                                <img
+                                    src={formData.coverImageUrl}
+                                    alt="Cover"
+                                    style={{
+                                        maxWidth: '100%',
+                                        maxHeight: '200px',
+                                        objectFit: 'cover',
+                                        borderRadius: '8px'
+                                    }}
+                                />
+                            </Box>
+                        )}
+                    </Grid>
+
                     <Grid item xs={12}>
                         <TextField
                             fullWidth
@@ -114,8 +171,13 @@ function KnittingProjectDialog({ open, onClose, onSave, project = null }) {
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose}>Cancel</Button>
-                <Button onClick={handleSubmit} variant="contained" color="primary">
-                    Save
+                <Button
+                    onClick={handleSubmit}
+                    variant="contained"
+                    color="primary"
+                    disabled={imageUploading}
+                >
+                    {imageUploading ? <CircularProgress size={24} /> : 'Save'}
                 </Button>
             </DialogActions>
         </Dialog>

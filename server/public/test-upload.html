@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            gap: 20px;
+        }
+        .upload-section {
+            flex: 1;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        h2 {
+            margin-top: 0;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #7b5d36;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #5a3e1f;
+        }
+        #results {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f5f5f5;
+            white-space: pre-wrap;
+        }
+        .success {
+            color: green;
+            font-weight: bold;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>File Upload Testing</h1>
+    <p>Use this page to test file uploads to your S3 bucket via your Node.js backend.</p>
+    
+    <div class="container">
+        <div class="upload-section">
+            <h2>Upload Pattern</h2>
+            <form id="patternForm">
+                <div class="form-group">
+                    <label for="patternFile">Select a pattern file (PDF, DOCX, TXT):</label>
+                    <input type="file" id="patternFile" name="pattern" accept=".pdf,.docx,.doc,.txt">
+                </div>
+                <button type="submit">Upload Pattern</button>
+            </form>
+        </div>
+        
+        <div class="upload-section">
+            <h2>Upload Image</h2>
+            <form id="imageForm">
+                <div class="form-group">
+                    <label for="imageFile">Select an image (JPEG, PNG, GIF):</label>
+                    <input type="file" id="imageFile" name="image" accept="image/*">
+                </div>
+                <button type="submit">Upload Image</button>
+            </form>
+        </div>
+    </div>
+    
+    <h3>Results:</h3>
+    <div id="results">No uploads yet.</div>
+    
+    <script>
+        // Update this to match your server's address
+        const API_URL = '/api/test'; 
+        
+        // Pattern upload form
+        document.getElementById('patternForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const fileInput = document.getElementById('patternFile');
+            if (!fileInput.files.length) {
+                alert('Please select a file first');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('pattern', fileInput.files[0]);
+            
+            try {
+                const response = await fetch(`${API_URL}/upload-pattern`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                if (response.ok) {
+                    displayResult('Pattern upload successful', result, 'success');
+                } else {
+                    displayResult('Pattern upload failed', result, 'error');
+                }
+            } catch (error) {
+                displayResult('Error uploading pattern', error, 'error');
+            }
+        });
+        
+        // Image upload form
+        document.getElementById('imageForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const fileInput = document.getElementById('imageFile');
+            if (!fileInput.files.length) {
+                alert('Please select a file first');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('image', fileInput.files[0]);
+            
+            try {
+                const response = await fetch(`${API_URL}/upload-image`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                if (response.ok) {
+                    displayResult('Image upload successful', result, 'success');
+                } else {
+                    displayResult('Image upload failed', result, 'error');
+                }
+            } catch (error) {
+                displayResult('Error uploading image', error, 'error');
+            }
+        });
+        
+        // Display results
+        function displayResult(message, data, type) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = `<span class="${type}">${message}</span>\n\n${JSON.stringify(data, null, 2)}`;
+        }
+    </script>
+</body>
+</html>
