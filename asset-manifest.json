@@ -1,20 +1,20 @@
 {
   "files": {
     "main.css": "/fiber-fix-web/static/css/main.872a80f3.css",
-    "main.js": "/fiber-fix-web/static/js/main.35cf58c6.js",
+    "main.js": "/fiber-fix-web/static/js/main.02f87c98.js",
     "static/js/903.ff2586ff.chunk.js": "/fiber-fix-web/static/js/903.ff2586ff.chunk.js",
     "static/js/959.9e40182e.chunk.js": "/fiber-fix-web/static/js/959.9e40182e.chunk.js",
     "static/js/453.06ec9d60.chunk.js": "/fiber-fix-web/static/js/453.06ec9d60.chunk.js",
     "static/js/749.0f499673.chunk.js": "/fiber-fix-web/static/js/749.0f499673.chunk.js",
     "index.html": "/fiber-fix-web/index.html",
     "main.872a80f3.css.map": "/fiber-fix-web/static/css/main.872a80f3.css.map",
-    "main.35cf58c6.js.map": "/fiber-fix-web/static/js/main.35cf58c6.js.map",
+    "main.02f87c98.js.map": "/fiber-fix-web/static/js/main.02f87c98.js.map",
     "959.9e40182e.chunk.js.map": "/fiber-fix-web/static/js/959.9e40182e.chunk.js.map",
     "453.06ec9d60.chunk.js.map": "/fiber-fix-web/static/js/453.06ec9d60.chunk.js.map",
     "749.0f499673.chunk.js.map": "/fiber-fix-web/static/js/749.0f499673.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.872a80f3.css",
-    "static/js/main.35cf58c6.js"
+    "static/js/main.02f87c98.js"
   ]
 }
