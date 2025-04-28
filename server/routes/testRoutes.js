@@ -24,4 +24,10 @@ router.get('/ping', (req, res) => {
   res.status(200).json({ message: 'Test route is working!' });
 });
 
+// Test route for pattern upload
+router.post('/upload-pattern', mockAuth, uploadPattern[0], uploadPattern[1], uploadPatternFile);
+
+// Test route for image upload
+router.post('/upload-image', mockAuth, uploadImage[0], uploadImage[1], uploadImageFile);
+
 module.exports = router;

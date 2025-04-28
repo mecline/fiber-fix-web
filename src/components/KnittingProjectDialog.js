@@ -10,7 +10,8 @@ import {
     Grid,
     Box,
     Typography,
-    CircularProgress
+    CircularProgress,
+    Divider
 } from '@mui/material';
 import FileUploader from './FileUploader'; 
 
@@ -22,13 +23,15 @@ const initialFormData = {
     yarn: '',
     notes: '',
     coverImageKey: '', 
-    coverImageUrl: '' 
+    coverImageUrl: '',
+    patternDocKey: '',
+    patternDocUrl: ''
 };
 
 function KnittingProjectDialog({ open, onClose, onSave, project = null }) {
     const [formData, setFormData] = useState(initialFormData);
-    const [isUploading, setIsUploading] = useState(false);
-    const [imageUploading, setImageUploading] = useState(false);
+    const [isImageUploading, setIsImageUploading] = useState(false);
+    const [isPatternUploading, setIsPatternUploading] = useState(false);
 
     useEffect(() => {
         if (project) {
@@ -46,32 +49,38 @@ function KnittingProjectDialog({ open, onClose, onSave, project = null }) {
         }));
     };
 
-    const handleFileUpload = (fileData) => {
+    const handleImageUpload = (fileData) => {
         setFormData(prev => ({
             ...prev,
             coverImageKey: fileData.key,
             coverImageUrl: fileData.url
         }));
     };
-
-    const handleImageUploadSuccess = (file) => {
+    
+    // Add a new handler for pattern documents
+    const handlePatternUpload = (fileData) => {
         setFormData(prev => ({
             ...prev,
-            coverImageKey: file.key,
-            coverImageUrl: file.location
+            patternDocKey: fileData.key,
+            patternDocUrl: fileData.url,
+            // You might want to update the pattern name based on the file name
+            pattern: fileData.name || prev.pattern
         }));
-        setImageUploading(false);
-    };
-
-    const handleImageUploadError = (error) => {
-        console.error("Image upload error:", error);
-        setImageUploading(false);
     };
 
     const handleSubmit = () => {
         onSave(formData);
         onClose();
     };
+
+    // Define accepted file types
+    const imageFileTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    const patternFileTypes = [
+        'application/pdf', 
+        'application/msword', 
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 
+        'text/plain'
+    ];
 
     return (
         <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
@@ -91,12 +100,13 @@ function KnittingProjectDialog({ open, onClose, onSave, project = null }) {
 
                     <Grid item xs={12}>
                         <Typography variant="subtitle1" gutterBottom>Cover Image</Typography>
-
                         <FileUploader
-                            onFileUpload={handleFileUpload}
+                            onFileUpload={handleImageUpload}
                             onError={(msg) => console.error(msg)}
-                            isLoading={isUploading}
-                            setIsLoading={setIsUploading}
+                            isLoading={isImageUploading}
+                            setIsLoading={setIsImageUploading}
+                            fileType="image"
+                            acceptedFileTypes={imageFileTypes}
                         />
 
                         {formData.coverImageUrl && (
@@ -114,14 +124,45 @@ function KnittingProjectDialog({ open, onClose, onSave, project = null }) {
                             </Box>
                         )}
                     </Grid>
+                    
+                    <Grid item xs={12}>
+                        <Divider sx={{ my: 1 }} />
+                        <Typography variant="subtitle1" gutterBottom>Pattern Document</Typography>
+                        <FileUploader
+                            onFileUpload={handlePatternUpload}
+                            onError={(msg) => console.error(msg)}
+                            isLoading={isPatternUploading}
+                            setIsLoading={setIsPatternUploading}
+                            fileType="pattern"
+                            acceptedFileTypes={patternFileTypes}
+                        />
+                        
+                        {formData.patternDocUrl && (
+                            <Box mt={2} textAlign="center">
+                                <Typography variant="body2">
+                                    Pattern file: {formData.pattern}
+                                </Typography>
+                                <Button 
+                                    variant="outlined" 
+                                    size="small" 
+                                    href={formData.patternDocUrl} 
+                                    target="_blank"
+                                    sx={{ mt: 1 }}
+                                >
+                                    View Document
+                                </Button>
+                            </Box>
+                        )}
+                    </Grid>
 
                     <Grid item xs={12}>
                         <TextField
                             fullWidth
-                            label="Pattern"
+                            label="Pattern Name/Link"
                             name="pattern"
                             value={formData.pattern}
                             onChange={handleChange}
+                            helperText="Enter pattern name or link. This will be updated if you upload a pattern document."
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -175,9 +216,9 @@ function KnittingProjectDialog({ open, onClose, onSave, project = null }) {
                     onClick={handleSubmit}
                     variant="contained"
                     color="primary"
-                    disabled={imageUploading}
+                    disabled={isImageUploading || isPatternUploading}
                 >
-                    {imageUploading ? <CircularProgress size={24} /> : 'Save'}
+                    {(isImageUploading || isPatternUploading) ? <CircularProgress size={24} /> : 'Save'}
                 </Button>
             </DialogActions>
         </Dialog>

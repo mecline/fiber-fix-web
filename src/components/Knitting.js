@@ -172,10 +172,10 @@ function Knitting() {
         sx={{ 
           p: { xs: 2, sm: 3 },
           borderRadius: customTheme.borderRadius.lg,
-          height: '100%',
+          height: 'calc(100vh - 115px)',
           backgroundColor: customTheme.colors.containerBackground,
           position: 'relative',
-          overflow: 'hidden'
+          overflow: 'auto'
         }}
       >
         {loading && (
