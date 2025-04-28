@@ -1,33 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Button, 
-  Grid, 
-  Typography, 
-  Box, 
-  Paper, 
-  Fab, 
-  useTheme, 
+import {
+  Button,
+  Grid,
+  Typography,
+  Box,
+  Paper,
+  Fab,
+  useTheme,
   useMediaQuery,
   IconButton,
   Tooltip,
   Fade,
   LinearProgress,
-  Card,
-  CardHeader,
-  Chip,
+  Card, Chip,
   Menu,
   MenuItem,
   ListItemIcon,
   ListItemText
 } from '@mui/material';
-import { 
+import {
   Add as AddIcon,
   FilterList as FilterListIcon,
-  Sort as SortIcon,
-  MoreVert as MoreVertIcon,
-  CheckCircle as CheckCircleIcon,
-  HourglassEmpty as HourglassEmptyIcon,
-  Cancel as CancelIcon
+  Sort as SortIcon, CheckCircle as CheckCircleIcon
 } from '@mui/icons-material';
 import { auth } from '../firebase';
 import { createKnittingProject, updateKnittingProject, deleteKnittingProject, getKnittingProjects, updateRowCounter } from '../firebase/db';
@@ -101,8 +95,16 @@ function Knitting() {
 
   const handleCreateProject = async (projectData) => {
     if (auth.currentUser) {
-      await createKnittingProject(auth.currentUser.uid, projectData);
-      loadProjects();
+      try {
+        await createKnittingProject(auth.currentUser.uid, {
+          ...projectData,
+          coverImageKey: projectData.coverImageKey || '',
+          coverImageUrl: projectData.coverImageUrl || ''
+        });
+        loadProjects();
+      } catch (error) {
+        console.error('Error creating project:', error);
+      }
     }
   };
 
@@ -163,28 +165,6 @@ function Knitting() {
     handleSortClose();
   };
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'Completed':
-        return customTheme.colors.success;
-      case 'In Progress':
-        return customTheme.colors.warning;
-      default:
-        return customTheme.colors.textLight;
-    }
-  };
-
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case 'Completed':
-        return <CheckCircleIcon fontSize="small" />;
-      case 'In Progress':
-        return <HourglassEmptyIcon fontSize="small" />;
-      default:
-        return <CancelIcon fontSize="small" />;
-    }
-  };
-
   return (
     <Fade in={true} timeout={500}>
       <Paper 
@@ -192,10 +172,10 @@ function Knitting() {
         sx={{ 
           p: { xs: 2, sm: 3 },
           borderRadius: customTheme.borderRadius.lg,
-          height: '100%',
+          height: 'calc(100vh - 115px)',
           backgroundColor: customTheme.colors.containerBackground,
           position: 'relative',
-          overflow: 'hidden'
+          overflow: 'auto'
         }}
       >
         {loading && (
@@ -359,30 +339,6 @@ function Knitting() {
                     }
                   }}
                 >
-                  <CardHeader
-                    title={project.name}
-                    action={
-                      <IconButton aria-label="project options">
-                        <MoreVertIcon />
-                      </IconButton>
-                    }
-                    subheader={
-                      <Box sx={{ display: 'flex', alignItems: 'center', mt: 0.5 }}>
-                        <Chip 
-                          size="small"
-                          label={project.status}
-                          icon={getStatusIcon(project.status)}
-                          sx={{ 
-                            bgcolor: `${getStatusColor(project.status)}20`,
-                            color: getStatusColor(project.status),
-                            fontWeight: 500,
-                            border: `1px solid ${getStatusColor(project.status)}40`
-                          }}
-                        />
-                      </Box>
-                    }
-                    sx={{ pb: 0 }}
-                  />
                   <KnittingProjectCard
                     project={project}
                     onEdit={handleEdit}
@@ -395,7 +351,6 @@ function Knitting() {
           </Grid>
         )}
 
-        {/* Mobile FAB for adding new project */}
         {isMobile && (
           <Fab 
             color="primary" 

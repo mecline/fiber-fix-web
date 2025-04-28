@@ -208,7 +208,7 @@ function Embroidery() {
                 const { data: { text } } = await scheduler.addJob('recognize', canvas);
 
                 // Find DMC numbers in the text
-                const dmcRegex = /\b\d{1,4}\b/g;  // Match 2-4 digit numbers
+                const dmcRegex = /\b\d{1,4}\b/g;  // Match 1-4 digit numbers
                 const numbers = text.match(dmcRegex) || [];
 
                 numbers.forEach(num => {
@@ -313,7 +313,7 @@ function Embroidery() {
                     justifyContent: 'center',
                     gap: 2, 
                     width: '100%',
-                    px: 2 // Added horizontal padding
+                    px: 2 
                 }}>
                     <IconButton
                         onClick={(e) => {
@@ -332,7 +332,7 @@ function Embroidery() {
                     </IconButton>
                     <Badge
                         badgeContent={flossCounts[params.row.floss] > 0 ? flossCounts[params.row.floss] : 0}
-                        color="primary"
+                        color={flossCounts[params.row.floss] === 0 || !flossCounts[params.row.floss] ? "default" : "primary"}
                         showZero
                         sx={{
                             '& .MuiBadge-badge': {
@@ -385,7 +385,7 @@ function Embroidery() {
                     sx={{
                         p: { xs: 2, sm: 3 },
                         borderRadius: customTheme.borderRadius.lg,
-                        height: '100%',
+                        height: 'calc(100vh - 115px)',
                         backgroundColor: customTheme.colors.containerBackground,
                         position: 'relative',
                         overflow: 'hidden'
@@ -543,7 +543,7 @@ function Embroidery() {
                                         startIcon={processingFile ? <LinearProgress size={20} /> : <FileUploadIcon />}
                                         sx={{ ml: 1 }}
                                     >
-                                        {processingFile ? 'Processing...' : 'Upload Pattern'}
+                                        {processingFile ? 'Processing...' : 'Scan Pattern'}
                                     </Button>
                                 </Tooltip>
                             </label>
@@ -561,7 +561,7 @@ function Embroidery() {
                             <Paper
                                 elevation={1}
                                 sx={{
-                                    height: 'calc(100vh - 400px)',
+                                    height: 'calc(95vh - 400px)',
                                     minHeight: '400px',
                                     borderRadius: customTheme.borderRadius.md,
                                     overflow: 'hidden'
@@ -631,7 +631,7 @@ function Embroidery() {
                             <Card
                                 elevation={2}
                                 sx={{
-                                    height: 'calc(100vh - 400px)',
+                                    height: 'calc(95vh - 400px)',
                                     minHeight: '400px',
                                     borderRadius: customTheme.borderRadius.md,
                                     display: 'flex',
@@ -658,7 +658,6 @@ function Embroidery() {
                                                 <Box>
                                                     <Typography variant="h5">DMC {selectedFloss.floss}</Typography>
                                                     <Typography variant="subtitle1" color="textSecondary">{selectedFloss.name}</Typography>
-                                                    <Typography variant="body2" sx={{ mt: 1 }}>HEX: {selectedFloss.hex}</Typography>
                                                 </Box>
                                             </Box>
 
@@ -695,6 +694,13 @@ function Embroidery() {
                                             <Box>
                                                 <Typography variant="subtitle2" gutterBottom>Color Information</Typography>
                                                 <Grid container spacing={1} sx={{ mt: 0.5 }}>
+                                                <Grid item xs={6}>
+                                                <Typography variant="body2" sx={{ mt: 1 }}>HEX</Typography>
+                                                        <Typography variant="body1">
+                                                        {selectedFloss.hex}
+                                                        </Typography>
+                                                    </Grid>
+                                                
                                                     <Grid item xs={6}>
                                                         <Typography variant="body2" color="textSecondary">RGB</Typography>
                                                         <Typography variant="body1">

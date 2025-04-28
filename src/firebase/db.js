@@ -31,7 +31,11 @@ export const createKnittingProject = async (userId, projectData) => {
         rowTarget: 0,
         repeatPattern: false,
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
+        coverImageKey: projectData.coverImageKey || '',
+        coverImageUrl: projectData.coverImageUrl || '',
+        patternDocKey: projectData.patternDocKey || '',
+        patternDocUrl: projectData.patternDocUrl || ''
     });
     
     return projectId;

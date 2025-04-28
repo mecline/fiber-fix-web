@@ -1,24 +1,31 @@
 import React, { useState } from 'react';
-import { 
-  CardContent, 
-  CardActions, 
-  Typography, 
-  Box, 
-  IconButton, 
+import {
+  CardContent,
+  CardActions,
+  Typography,
+  Box,
+  IconButton,
   Tooltip,
   LinearProgress,
   Grid,
   Divider,
-  Collapse
+  Collapse,
+  Avatar,
+  CardHeader,
+  Chip,
+  Link
 } from '@mui/material';
-import { 
-  Edit as EditIcon, 
-  Delete as DeleteIcon, 
+import {
+  Edit as EditIcon,
+  Delete as DeleteIcon,
   ExpandMore as ExpandMoreIcon,
   ExpandLess as ExpandLessIcon,
   Timer as TimerIcon,
   StraightenOutlined as StraightenOutlinedIcon,
-  ColorLens as ColorLensIcon
+  ColorLens as ColorLensIcon,
+  CheckCircle as CheckCircleIcon,
+  HourglassEmpty as HourglassEmptyIcon,
+  Cancel as CancelIcon
 } from '@mui/icons-material';
 import RowCounter from './RowCounter';
 import { theme as customTheme } from '../theme';
@@ -48,11 +55,74 @@ function KnittingProjectCard({ project, onEdit, onDelete, onRowCounterUpdate }) 
     if (!project.rowTarget || project.rowTarget <= 0) return 0;
     return Math.min(100, Math.round((project.rowCount / project.rowTarget) * 100));
   };
-  
+
   const progressPercentage = getProgressPercentage();
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'Completed':
+        return customTheme.colors.success;
+      case 'In Progress':
+        return customTheme.colors.warning;
+      default:
+        return customTheme.colors.textLight;
+    }
+  };
+
+  const getStatusIcon = (status) => {
+    switch (status) {
+      case 'Completed':
+        return <CheckCircleIcon fontSize="small" />;
+      case 'In Progress':
+        return <HourglassEmptyIcon fontSize="small" />;
+      default:
+        return <CancelIcon fontSize="small" />;
+    }
+  };
+
+  console.log("Cover image URL:", project.coverImageUrl);
 
   return (
     <>
+      <CardHeader
+        avatar={
+          project.coverImageUrl ? (
+            <Avatar
+              src={project.coverImageUrl}
+              variant="rounded"
+              sx={{ width: 56, height: 56 }}
+              alt={project.name}
+            />
+          ) : (
+            <Avatar
+              sx={{
+                width: 56,
+                height: 56,
+                bgcolor: customTheme.colors.primaryLight
+              }}
+            >
+              {project.name ? project.name.charAt(0).toUpperCase() : 'P'}
+            </Avatar>
+          )
+        }
+        title={project.name}
+        subheader={
+          <Box sx={{ display: 'flex', alignItems: 'center', mt: 0.5 }}>
+            <Chip
+              size="small"
+              label={project.status}
+              icon={getStatusIcon(project.status)}
+              sx={{
+                bgcolor: `${getStatusColor(project.status)}20`,
+                color: getStatusColor(project.status),
+                fontWeight: 500,
+                border: `1px solid ${getStatusColor(project.status)}40`
+              }}
+            />
+          </Box>
+        }
+      />
+
       <CardContent sx={{ flexGrow: 1, pt: 0 }}>
         {project.rowTarget > 0 && (
           <Box sx={{ mt: 1, mb: 2 }}>
@@ -64,16 +134,16 @@ function KnittingProjectCard({ project, onEdit, onDelete, onRowCounterUpdate }) 
                 {project.rowCount} / {project.rowTarget} rows ({progressPercentage}%)
               </Typography>
             </Box>
-            <LinearProgress 
-              variant="determinate" 
+            <LinearProgress
+              variant="determinate"
               value={progressPercentage}
-              sx={{ 
-                height: 8, 
+              sx={{
+                height: 8,
                 borderRadius: 1,
                 backgroundColor: 'rgba(0,0,0,0.05)',
                 '& .MuiLinearProgress-bar': {
-                  backgroundColor: progressPercentage === 100 
-                    ? customTheme.colors.success 
+                  backgroundColor: progressPercentage === 100
+                    ? customTheme.colors.success
                     : customTheme.colors.primary
                 }
               }}
@@ -87,17 +157,17 @@ function KnittingProjectCard({ project, onEdit, onDelete, onRowCounterUpdate }) 
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <StraightenOutlinedIcon fontSize="small" color="action" />
                 <Typography variant="body2" noWrap>
-                  {project.needleSize}
+                  {project.needleSize} mm
                 </Typography>
               </Box>
             </Grid>
           )}
-          
+
           {project.yarn && (
             <Grid item xs={6}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <ColorLensIcon fontSize="small" color="action" />
-                <Typography variant="body2" noWrap>
+                <Typography variant="body2">
                   {project.yarn}
                 </Typography>
               </Box>
@@ -112,12 +182,23 @@ function KnittingProjectCard({ project, onEdit, onDelete, onRowCounterUpdate }) 
                 <Typography variant="body2" color="textSecondary" gutterBottom>
                   Pattern
                 </Typography>
+                {project.patternDocUrl ? (
+                  <Link
+                    variant="outlined"
+                    size="small"
+                    href={project.patternDocUrl}
+                    target="_blank"
+                    sx={{ mt: 1 }}
+                  >
+                    {project.pattern}
+                  </Link>
+                ) : 
                 <Typography variant="body2">
-                  {project.pattern}
-                </Typography>
+                {project.pattern}
+              </Typography>}
               </Box>
             )}
-            
+
             {project.notes && (
               <Box>
                 <Typography variant="body2" color="textSecondary" gutterBottom>
@@ -142,7 +223,7 @@ function KnittingProjectCard({ project, onEdit, onDelete, onRowCounterUpdate }) 
               </IconButton>
             </Tooltip>
           </Box>
-          
+
           <Box sx={{ display: 'flex', gap: 0.5 }}>
             <Tooltip title="Row Counter">
               <IconButton
